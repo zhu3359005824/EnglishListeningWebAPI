@@ -1,0 +1,19 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+	<ItemGroup>
+		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.8" />
+		<PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.11" />
+		<PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.6.1" />
+	</ItemGroup>
+	<ItemGroup>
+	  <ProjectReference Include="..\ZHZ.JWT\ZHZ.JWT.csproj" />
+	  <ProjectReference Include="..\ZHZ.Tools\ZHZ.Tools.csproj" />
+	</ItemGroup>
+
+
+</Project>

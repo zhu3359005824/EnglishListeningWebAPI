@@ -1,0 +1,6 @@
+@IDentity.WebAPI_HostAddress = http://localhost:5240
+
+GET {{IDentity.WebAPI_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
