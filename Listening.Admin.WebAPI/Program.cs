@@ -1,4 +1,9 @@
 
+using Listening.Domain;
+using Listening.Infrastructure;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi.Models;
+
 namespace Listening.Admin.WebAPI
 {
     public class Program
@@ -13,6 +18,20 @@ namespace Listening.Admin.WebAPI
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
+
+            
+
+            builder.Services.AddDbContext<ListeningDbContext>(opt =>
+            {
+                opt.UseSqlServer("Server=.;Database=EnglishListeningWeb;Trusted_Connection=True;Encrypt=True;TrustServerCertificate=True;");
+            });
+
+
+            builder.Services.AddMemoryCache();
+
+
+            builder.Services.AddScoped<IListeningRepository, ListeningRepository>();
+            builder.Services.AddScoped<ListeningDomainService>();
 
             var app = builder.Build();
 

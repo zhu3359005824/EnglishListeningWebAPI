@@ -1,22 +1,50 @@
-﻿using Listening.Domain;
-using Listening.Main.WebAPI.Controllers.AlbumController;
+﻿using IDentity.WebAPI;
+using Listening.Admin.WebAPI.Controllers.AlbumController;
+using Listening.Domain;
+using Listening.Domain.Entity;
+using Listening.Infrastructure;
+
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
 
-namespace Listening.Main.WebAPI.Controllers.CategoryController
+namespace Listening.Admin.WebAPI.Controllers.CategoryController
 {
     [Route("api/[controller]/[action]")]
     [ApiController]
+   // [Authorize(Roles = "Admin")]
+   // [UnitOfWork(typeof(ListeningDbContext))]
     public class CategoryController : ControllerBase
     {
-        private readonly IListeningRepository _listeningRepository;
+        private readonly ListeningDbContext _dbCtx;
+        private IListeningRepository _listeningRepository;
+        private readonly ListeningDomainService _listeningDomainService;
         private readonly IMemoryCache _memoryCache;
 
-        public CategoryController(IListeningRepository listeningRepository, IMemoryCache memoryCache)
+        public CategoryController(ListeningDbContext dbCtx, IListeningRepository listeningRepository, ListeningDomainService listeningDomainService, IMemoryCache memoryCache)
         {
+            _dbCtx = dbCtx;
             _listeningRepository = listeningRepository;
+            _listeningDomainService = listeningDomainService;
             _memoryCache = memoryCache;
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> AddCategory(AddCategoryRequest request)
+        {
+
+
+
+            Category category = new Category(request.CategoryName, request.ShowIndex);
+            
+
+            _dbCtx.Categories.Add(category);
+
+            await _dbCtx.SaveChangesAsync();
+
+            return Ok("添加成功");
+
         }
 
 

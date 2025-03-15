@@ -1,3 +1,4 @@
+using Listening.Domain;
 using Listening.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 
@@ -23,6 +24,10 @@ namespace Listening.Main.WebAPI
 
 
             builder.Services.AddMemoryCache();
+
+
+            builder.Services.AddScoped<IListeningRepository , ListeningRepository>();
+            builder.Services.AddScoped<ListeningDomainService>();
 
             var app = builder.Build();
 

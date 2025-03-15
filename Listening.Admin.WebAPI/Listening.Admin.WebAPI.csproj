@@ -7,7 +7,14 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="FluentValidation" Version="11.11.0" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\IDentity.WebAPI\IDentity.WebAPI.csproj" />
+    <ProjectReference Include="..\Listening.Domain\Listening.Domain.csproj" />
+    <ProjectReference Include="..\Listening.Infrastructure\Listening.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>

@@ -24,18 +24,22 @@ namespace Listening.Domain.Entity
         /// <summary>
         /// 字幕类型
         /// </summary>
+        
         public string SentenceType {  get; set; }
+
+        public string EpisodeName { get; set; }
 
         public int ShowIndex { get; set; }
 
         public double RealSeconds { get; private  set; }
 
 
-        public Episode( Guid albumId, string sentenceContxt, string sentenceType) : base()
+        public Episode(Guid albumId, string sentenceContxt, string sentenceType, string episodeName) : base()
         {
             AlbumId = albumId;
             SentenceContxt = sentenceContxt;
             SentenceType = sentenceType;
+            EpisodeName = episodeName;
         }
 
         public IEnumerable<Sentence> GetSentenceContext()

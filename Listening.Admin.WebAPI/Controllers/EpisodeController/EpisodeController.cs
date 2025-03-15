@@ -1,24 +1,63 @@
-﻿using Listening.Domain;
-using Listening.Main.WebAPI.Controllers.AlbumController;
-using Listening.Main.WebAPI.Controllers.CategoryController;
+﻿using IDentity.WebAPI;
+using Listening.Admin.WebAPI.Controllers.CategoryController;
+using Listening.Domain;
+using Listening.Domain.Entity;
+using Listening.Infrastructure;
+
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
 
-namespace Listening.Main.WebAPI.Controllers.EpisodeController
+namespace Listening.Admin.WebAPI.Controllers.EpisodeController
 {
     [Route("api/[controller]/[action]")]
     [ApiController]
+    //[Authorize(Roles = "Admin")]
+    [UnitOfWork(typeof(ListeningDbContext))]
     public class EpisodeController : ControllerBase
     {
-        private readonly IListeningRepository _listeningRepository;
+        private readonly ListeningDbContext _dbCtx;
+        private IListeningRepository _listeningRepository;
+        private readonly ListeningDomainService _listeningDomainService;
         private readonly IMemoryCache _memoryCache;
 
-        public EpisodeController(IListeningRepository listeningRepository, IMemoryCache memoryCache)
+        public EpisodeController(ListeningDbContext dbCtx, IListeningRepository listeningRepository, ListeningDomainService listeningDomainService, IMemoryCache memoryCache)
         {
+            _dbCtx = dbCtx;
             _listeningRepository = listeningRepository;
+            _listeningDomainService = listeningDomainService;
             _memoryCache = memoryCache;
         }
+
+
+
+        [HttpPost]
+        public async Task<ActionResult> AddEpisode(AddEpisodeRequest request)
+        {
+            var album=await _listeningRepository.FindAlbumByNameAsync(request.albumName);
+            Episode episode = new Episode(album.Id, request.sentenceContext, request.sentenceType,
+                request.episodeName);
+ 
+            _dbCtx.Episodes.Add(episode);
+
+            return Ok("添加成功");
+
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
         [HttpGet]
@@ -31,7 +70,7 @@ namespace Listening.Main.WebAPI.Controllers.EpisodeController
                 e.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(Random.Shared.Next(5, 10));
                 e.SlidingExpiration = TimeSpan.FromMinutes(1);
 
-                return EpisodeModel.Create(await _listeningRepository.FindEpisodeByNameAsync(Name),true);
+                return EpisodeModel.Create(await _listeningRepository.FindEpisodeByNameAsync(Name), true);
 
 
             });
@@ -54,7 +93,7 @@ namespace Listening.Main.WebAPI.Controllers.EpisodeController
                 e.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(Random.Shared.Next(5, 10));
                 e.SlidingExpiration = TimeSpan.FromMinutes(1);
 
-                return EpisodeModel.Create(await _listeningRepository.GetAllEpisodeByAlbumNameAsync(albumName),true);
+                return EpisodeModel.Create(await _listeningRepository.GetAllEpisodeByAlbumNameAsync(albumName), true);
 
 
             });

@@ -17,6 +17,7 @@ namespace Listening.Infrastructure.Config
             builder.HasKey(e => e.Id).IsClustered(false);
           
             builder.Property(e => e.CoverUrl).IsRequired(false).HasMaxLength(500).IsUnicode();
+            builder.HasQueryFilter(e => e.IsDeleted);
         }
     }
 }

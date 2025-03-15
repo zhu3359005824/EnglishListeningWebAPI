@@ -25,7 +25,7 @@ namespace Listening.Infrastructure
 
         public async Task<Album?> FindAlbumByNameAsync(string albumName)
         {
-            return await _context.FindAsync<Album>(albumName);
+            return await _context.Albums.FirstOrDefaultAsync(x=>x.AlbumName==albumName);
         }
 
         public async Task<Category?> FindCategoryByIdAsync(Guid id)
@@ -35,7 +35,7 @@ namespace Listening.Infrastructure
 
         public async Task<Category?> FindCategoryByNameAsync(string categoryName)
         {
-            return await _context.FindAsync<Category>(categoryName );
+            return await _context.Categories.FirstOrDefaultAsync(x => x.CategoryName == categoryName);
         }
 
         public async Task<Episode?> FindEpisodeByIdAsync(Guid id)
@@ -45,7 +45,7 @@ namespace Listening.Infrastructure
 
         public  async Task<Episode?> FindEpisodeByNameAsync(string episodeName)
         {
-            return await _context.FindAsync<Episode>(episodeName);
+            return await _context.Episodes.FirstOrDefaultAsync(x => x.EpisodeName == episodeName);
         }
 
         public async Task<Album[]?> GetAllAlbumByCategoryNameAsync(string categoryName)

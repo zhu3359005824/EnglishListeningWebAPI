@@ -48,7 +48,7 @@ namespace Listening.Domain
             }
             var episode = await _listeningRepository.FindEpisodeByNameAsync(episodeName);
             if (episode != null) return episode;
-            Episode newEpisode = new Episode(albumId, sentenceContext, setenceType);
+            Episode newEpisode = new Episode(albumId, sentenceContext, setenceType,episodeName);
             return newEpisode;
 
         }
