@@ -37,7 +37,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Listening.Main.WebAPI", "Li
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Listening.Admin.WebAPI", "Listening.Admin.WebAPI\Listening.Admin.WebAPI.csproj", "{51CCF1BB-5CF5-48C2-B661-1A3BD4C46CCF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GlobalConfigurations", "GlobalConfigurations\GlobalConfigurations.csproj", "{EED4DB31-5F62-483A-B3EB-937AB040D803}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GlobalConfigurations", "GlobalConfigurations\GlobalConfigurations.csproj", "{EED4DB31-5F62-483A-B3EB-937AB040D803}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ZHZ.UnitOkWork", "ZHZ.UnitOkWork\ZHZ.UnitOkWork.csproj", "{6E955255-DD9D-40E4-9CA8-1040A1822D2A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -101,6 +103,10 @@ Global
 		{EED4DB31-5F62-483A-B3EB-937AB040D803}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EED4DB31-5F62-483A-B3EB-937AB040D803}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EED4DB31-5F62-483A-B3EB-937AB040D803}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6E955255-DD9D-40E4-9CA8-1040A1822D2A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6E955255-DD9D-40E4-9CA8-1040A1822D2A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6E955255-DD9D-40E4-9CA8-1040A1822D2A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6E955255-DD9D-40E4-9CA8-1040A1822D2A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -120,6 +126,7 @@ Global
 		{B2257DE7-C9CD-49A6-B0A6-2CB979029EDF} = {3F6BB789-5911-46DC-9F15-3919FB95BB31}
 		{51CCF1BB-5CF5-48C2-B661-1A3BD4C46CCF} = {3F6BB789-5911-46DC-9F15-3919FB95BB31}
 		{EED4DB31-5F62-483A-B3EB-937AB040D803} = {B63AFA50-6261-4FDC-A8D3-809AA3C98CDB}
+		{6E955255-DD9D-40E4-9CA8-1040A1822D2A} = {B63AFA50-6261-4FDC-A8D3-809AA3C98CDB}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {3FE530E2-AA5A-4189-A8D1-61B7534C2F59}

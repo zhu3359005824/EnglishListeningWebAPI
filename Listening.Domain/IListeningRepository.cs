@@ -29,10 +29,23 @@ namespace Listening.Domain
         public Task<int> GetMaxIndexOfAlbumsAsync(Guid  categotyId);
         
         public Task<int> GetMaxIndexOfEpisodesAsync(Guid albumId);
-     
 
 
 
+        Task AddAlbum(Album album,string categoryName);
+        Task AddEpisode(Episode episode,string albumName);
+         Task AddCategory(Category category);
 
+
+
+        Task DeleteAlbum(Album album, string categoryName);
+        Task DeleteEpisode(Episode episode, string albumName);
+        Task DeleteCategory(Category category);
+
+
+
+        Task UpdateAlbum(Album album, string categoryName);
+        Task UpdateEpisode(Episode episode, string albumName);
+        Task UpdateCategory(Category category);
     }
 }

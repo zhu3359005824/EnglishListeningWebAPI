@@ -6,14 +6,14 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Listening.Admin.WebAPI.Controllers.AlbumController
 {
-    public record AlbumAddRequest(string AlbumName,int ShowIndex ,string CategoryName);
+    public record AddAlbumRequest(string AlbumName,int ShowIndex ,string CategoryName);
 
     //把校验规则写到单独的文件，也是DDD的一种原则
    
 }
-public class AlbumAddRequestValidator : AbstractValidator<AlbumAddRequest>
+public class AddAlbumRequestValidator : AbstractValidator<AddAlbumRequest>
 {
-    public AlbumAddRequestValidator(ListeningDbContext dbCtx)
+    public AddAlbumRequestValidator(ListeningDbContext dbCtx)
     {
         // 校验 AlbumName 不为空
         RuleFor(x => x.AlbumName).NotEmpty().WithMessage("专辑名称不能为空");

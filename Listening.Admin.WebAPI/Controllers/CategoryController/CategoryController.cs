@@ -34,7 +34,7 @@ namespace Listening.Admin.WebAPI.Controllers.CategoryController
         public async Task<ActionResult> AddCategory(AddCategoryRequest request)
         {
 
-
+           
 
             Category category = new Category(request.CategoryName, request.ShowIndex);
             

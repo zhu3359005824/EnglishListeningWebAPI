@@ -11,6 +11,11 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using ZHZ.JWT;
 
+using FluentValidation.AspNetCore;
+using FluentValidation;
+using IDentity.WebAPI.Controllers;
+using ZHZ.UnitOkWork;
+
 namespace IDentity.WebAPI
 {
     public class Program
@@ -25,6 +30,11 @@ namespace IDentity.WebAPI
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
+           
+
+            builder.Services.AddFluentValidationAutoValidation();
+            builder.Services.AddFluentValidationClientsideAdapters();
+            builder.Services.AddValidatorsFromAssemblyContaining<LoginRequest>();
 
             //JWT≈‰÷√
             builder.Services.Configure<JWTSettings>(builder.Configuration.GetSection("JWTSettings"));

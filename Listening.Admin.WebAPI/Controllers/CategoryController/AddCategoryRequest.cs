@@ -29,7 +29,7 @@ public class CategoryAddRequestValidator : AbstractValidator<AddCategoryRequest>
             return await dbCtx.Categories.AnyAsync(c => c.CategoryName == CategoryName, cancellation);
         }).WithMessage("AddCategory123456不存在");
 
-
+        Console.WriteLine("123");
 
     }
 }

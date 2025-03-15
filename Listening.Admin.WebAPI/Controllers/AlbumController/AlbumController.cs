@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
+using ZHZ.UnitOkWork;
 
 namespace Listening.Admin.WebAPI.Controllers.AlbumController
 {
@@ -31,7 +32,7 @@ namespace Listening.Admin.WebAPI.Controllers.AlbumController
         }
 
         [HttpPost]
-        public async Task<ActionResult> AddAlbum(AlbumAddRequest request)
+        public async Task<ActionResult> AddAlbum(AddAlbumRequest request)
         {
             var category= await _dbCtx.Categories.FindAsync(request.CategoryName);
             Album album=new Album(request.AlbumName,request.ShowIndex,category!.Id);

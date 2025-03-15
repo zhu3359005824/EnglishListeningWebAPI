@@ -4,6 +4,7 @@ using IDentity.Domain.Entity;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ZHZ.Tools;
+using ZHZ.UnitOkWork;
 
 namespace IDentity.WebAPI.Controllers
 {
@@ -21,17 +22,17 @@ namespace IDentity.WebAPI.Controllers
             _identityDomainService = identityDomainService;
         }
 
-        [HttpGet]
-        public async Task<ActionResult<string>> LoginByPhoneNumberAndPwd(string phoneNumber, string password)
+        [HttpPost]
+        public async Task<ActionResult<string>> LoginByPhoneNumberAndPwd(LoginRequest req )
         {
-            var user = await _identityRepository.FindByPhoneNumberAsync(phoneNumber);
+            var user = await _identityRepository.FindByPhoneNumberAsync(req.phoneNumber);
             if (user == null)
             {
                 return BadRequest("用户名不存在");
             }
-             string passwordHash= HashHelper.ComputeSha256Hash(password);
+             string passwordHash= HashHelper.ComputeSha256Hash(req.password);
 
-            var (IsLogin, token) = await _identityDomainService.LoginByPhoneNumberAndPwdAsync(phoneNumber, passwordHash);
+            var (IsLogin, token) = await _identityDomainService.LoginByPhoneNumberAndPwdAsync(req.phoneNumber, passwordHash);
 
             if (IsLogin.Succeeded)
             {
@@ -59,11 +60,11 @@ namespace IDentity.WebAPI.Controllers
 
             MyUser user = new MyUser("zhz");
             user.PhoneNumber = "11111111";
-            var hasUser=  await _identityRepository.FindByNameAsync(user.UserName);
-            if (hasUser != null)
-            {
-                return Ok("ok");
-            }
+            //var hasUser=  await _identityRepository.FindByNameAsync(user.UserName);
+            //if (hasUser != null)
+            //{
+            //    return Ok("ok");
+            //}
             
           
            var result= await _identityRepository.AddUserAsync(user, "123456");

@@ -18,6 +18,36 @@ namespace Listening.Infrastructure
             _context = context;
         }
 
+        public Task AddAlbum(Album album, string categoryName)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task AddCategory(Category category)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task AddEpisode(Episode episode, string albumName)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task DeleteAlbum(Album album, string categoryName)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task DeleteCategory(Category category)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task DeleteEpisode(Episode episode, string albumName)
+        {
+            throw new NotImplementedException();
+        }
+
         public async Task<Album?> FindAlbumByIdAsync(Guid id)
         {
            return await _context.FindAsync<Album>(id);  
@@ -85,6 +115,21 @@ namespace Listening.Infrastructure
             var maxIndex = await _context.Episodes.Where(e => e.AlbumId == albumId).OrderByDescending(e => e.ShowIndex).FirstAsync();
 
             return maxIndex.ShowIndex;
+        }
+
+        public Task UpdateAlbum(Album album, string categoryName)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task UpdateCategory(Category category)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task UpdateEpisode(Episode episode, string albumName)
+        {
+            throw new NotImplementedException();
         }
     }
 }
