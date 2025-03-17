@@ -21,6 +21,7 @@ namespace Listening.Infrastructure.Config
 
             builder.Property(e => e.SentenceContxt).HasMaxLength(int.MaxValue).IsUnicode().IsRequired();
             builder.Property(e => e.SentenceType).HasMaxLength(10).IsUnicode(false).IsRequired();
+            builder.HasQueryFilter(b => b.IsDeleted == false);
         }
     }
 }

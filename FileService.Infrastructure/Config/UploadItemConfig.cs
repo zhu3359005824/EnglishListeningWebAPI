@@ -17,6 +17,7 @@ namespace FileService.Infrastructure.Config
             builder.ToTable("T_UploadItems");
             builder.HasKey(e => e.Id).IsClustered(false);
             builder.HasIndex(e => new { e.FileSHA256Hash, e.FileByteSize });//经常要按照这两个列进行查询，因此把它们两个组成复合索引，提高查询效率。
+            builder.HasQueryFilter(b => b.IsDeleted == false);
 
         }
     }

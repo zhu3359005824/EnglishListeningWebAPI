@@ -3,13 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ZHZ.Entity;
 
 
 
 
 namespace FileService.Domain.Entity
 {
-    public class UploadItem 
+    public class UploadItem :AggregateRootEntity
     {
         public Guid Id { get; init; }
         public string FileName { get; private set; }
