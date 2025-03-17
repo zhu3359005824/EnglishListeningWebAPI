@@ -1,5 +1,5 @@
 ﻿
-using IDentity.WebAPI;
+
 using Listening.Domain;
 using Listening.Domain.Entity;
 using Listening.Infrastructure;
@@ -13,7 +13,7 @@ namespace Listening.Admin.WebAPI.Controllers.AlbumController
 {
     [Route("api/[controller]/[action]")]
     [ApiController]
-   // [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Admin")]
     [UnitOfWork(typeof(ListeningDbContext))]
 
     public class AlbumController : ControllerBase
@@ -34,7 +34,11 @@ namespace Listening.Admin.WebAPI.Controllers.AlbumController
         [HttpPost]
         public async Task<ActionResult> AddAlbum(AddAlbumRequest request)
         {
-            var category= await _dbCtx.Categories.FindAsync(request.CategoryName);
+            var category= await _listeningRepository.FindCategoryByNameAsync(request.CategoryName);
+            if (category == null) 
+            {
+                return BadRequest($"Catrgory_{request.CategoryName}不存在");
+            }
             Album album=new Album(request.AlbumName,request.ShowIndex,category!.Id);
 
             _dbCtx.Albums.Add(album);

@@ -14,7 +14,7 @@ namespace ZHZ.JWT
     {
         public string BuildToken(IEnumerable<Claim> claims, JWTSettings settings)
         {
-          TimeSpan expireTime= TimeSpan.FromSeconds(settings.ExpireSeconds);
+          TimeSpan expireTime= TimeSpan.FromMinutes(settings.ExpireMinutes);
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(settings.Key));
             var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256Signature);
             var tokenDescriptor = new JwtSecurityToken(settings.Issuer, settings.Audience, claims,

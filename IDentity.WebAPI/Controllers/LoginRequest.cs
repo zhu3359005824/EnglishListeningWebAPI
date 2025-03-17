@@ -1,9 +1,10 @@
 ﻿using FluentValidation;
+using GlobalConfigurations;
 using IDentity.WebAPI.Controllers;
 
 namespace IDentity.WebAPI.Controllers
 {
-    public record LoginRequest(string phoneNumber,string password)
+    public record LoginRequest(string phoneNumber,string password):IValidationData
     {
     }
 }

@@ -12,6 +12,7 @@ using ZHZ.JWT;
 using Listening.Admin.WebAPI.Controllers.CategoryController;
 using Listening.Admin.WebAPI.Controllers.EpisodeController;
 using Listening.Admin.WebAPI.Controllers.AlbumController;
+using GlobalConfigurations;
 
 namespace Listening.Admin.WebAPI
 {
@@ -28,22 +29,14 @@ namespace Listening.Admin.WebAPI
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
-            //添加验证规则
-            builder.Services.AddFluentValidationAutoValidation();
-            builder.Services.AddFluentValidationClientsideAdapters();
-            builder.Services.AddValidatorsFromAssemblyContaining<AddCategoryRequest>();
-            builder.Services.AddValidatorsFromAssemblyContaining<AddEpisodeRequest>();
-            builder.Services.AddValidatorsFromAssemblyContaining<AddAlbumRequest>();
 
-
-            builder.Services.AddDbContext<ListeningDbContext>(opt =>
+            builder.ConfigureExtensionService(new InitializerOptions()
             {
-                opt.UseSqlServer("Server=.;Database=EnglishListeningWeb;Trusted_Connection=True;Encrypt=True;TrustServerCertificate=True;");
+                EventBusQueueName = "1",
+                LogFilePath = "E:/Identity.log"
             });
 
-            builder.Services.AddMemoryCache();
-            builder.Services.AddScoped<IListeningRepository, ListeningRepository>();
-            builder.Services.AddScoped<ListeningDomainService>();
+
 
 
 
@@ -59,10 +52,7 @@ namespace Listening.Admin.WebAPI
                 app.UseSwaggerUI();
             }
 
-            app.UseHttpsRedirection();
-            app.UseAuthentication();
-
-            app.UseAuthorization();
+           app.UseZhzDefault();
 
 
             app.MapControllers();

@@ -24,13 +24,17 @@ namespace IDentity.Domain
 
         Task<SignInResult> CheckPassword(MyUser user,string password);
 
-        Task<IdentityResult> UserSetRole(MyUser user,string role);
+        Task<IdentityResult> UserSetRole(MyUser user,string roleName);
 
         Task<IdentityResult> ChangePhoneNumber(MyUser user,string phoneNum,string token);
         Task<IdentityResult> ChangePasswordAsync(MyUser user,string newpassword);
 
-      
+      Task<IdentityResult> CreateRole(string roleName);
         Task ResetAccessFailedCount(MyUser user);
+
+
+     
+
         Task<IList<string>> GetRolesAsync(MyUser user);
 
 

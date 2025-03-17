@@ -41,6 +41,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GlobalConfigurations", "Glo
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ZHZ.UnitOkWork", "ZHZ.UnitOkWork\ZHZ.UnitOkWork.csproj", "{6E955255-DD9D-40E4-9CA8-1040A1822D2A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ZHZ.Infrastructure", "ZHZ.Infrastructure\ZHZ.Infrastructure.csproj", "{B4AC4131-F2CA-41CC-B1FA-C933A1254CDE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -107,6 +109,10 @@ Global
 		{6E955255-DD9D-40E4-9CA8-1040A1822D2A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6E955255-DD9D-40E4-9CA8-1040A1822D2A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6E955255-DD9D-40E4-9CA8-1040A1822D2A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B4AC4131-F2CA-41CC-B1FA-C933A1254CDE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B4AC4131-F2CA-41CC-B1FA-C933A1254CDE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B4AC4131-F2CA-41CC-B1FA-C933A1254CDE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B4AC4131-F2CA-41CC-B1FA-C933A1254CDE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -127,6 +133,7 @@ Global
 		{51CCF1BB-5CF5-48C2-B661-1A3BD4C46CCF} = {3F6BB789-5911-46DC-9F15-3919FB95BB31}
 		{EED4DB31-5F62-483A-B3EB-937AB040D803} = {B63AFA50-6261-4FDC-A8D3-809AA3C98CDB}
 		{6E955255-DD9D-40E4-9CA8-1040A1822D2A} = {B63AFA50-6261-4FDC-A8D3-809AA3C98CDB}
+		{B4AC4131-F2CA-41CC-B1FA-C933A1254CDE} = {B63AFA50-6261-4FDC-A8D3-809AA3C98CDB}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {3FE530E2-AA5A-4189-A8D1-61B7534C2F59}

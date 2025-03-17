@@ -1,0 +1,36 @@
+﻿using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.IdentityModel.Tokens;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace ZHZ.JWT
+{
+    public static class AuthenticationExtension
+    {
+        public static AuthenticationBuilder
+            AddJWTAuthentication(this IServiceCollection services, JWTSettings jWTSettings)
+        {
+            return services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(x =>
+            {
+                x.TokenValidationParameters = new()
+                {
+
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidateLifetime = true,
+                    ValidateIssuerSigningKey = true,
+                    ValidIssuer = jWTSettings.Issuer,
+                    ValidAudience = jWTSettings.Audience,
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jWTSettings.Key)),
+
+                };
+            });
+        }
+       
+    }
+}

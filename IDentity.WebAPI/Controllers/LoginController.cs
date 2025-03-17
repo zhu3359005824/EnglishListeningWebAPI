@@ -2,6 +2,7 @@
 using IDentity.Domain;
 using IDentity.Domain.Entity;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using ZHZ.Tools;
 using ZHZ.UnitOkWork;
@@ -21,6 +22,9 @@ namespace IDentity.WebAPI.Controllers
             _identityRepository = identityRepository;
             _identityDomainService = identityDomainService;
         }
+
+        
+
 
         [HttpPost]
         public async Task<ActionResult<string>> LoginByPhoneNumberAndPwd(LoginRequest req )
@@ -57,9 +61,29 @@ namespace IDentity.WebAPI.Controllers
         [HttpGet]
         public async Task<ActionResult> InitTest()
         {
+           
+          if(  await _identityRepository.CreateRole("Admin") == IdentityResult.Success)
+            {
+                MyUser user = new MyUser("zhz");
+                user.PhoneNumber = "11111111";
+                await _identityRepository.AddUserAsync(user, "123456");
 
-            MyUser user = new MyUser("zhz");
-            user.PhoneNumber = "11111111";
+                var result = await _identityRepository.UserSetRole(user, "Admin");
+
+                
+                if (result.Succeeded)
+                {
+                    return Ok("ok");
+                }
+                return BadRequest("´íÎó");
+
+            }
+          return BadRequest("cuowu");
+
+
+           
+
+            
             //var hasUser=  await _identityRepository.FindByNameAsync(user.UserName);
             //if (hasUser != null)
             //{
@@ -67,12 +91,7 @@ namespace IDentity.WebAPI.Controllers
             //}
             
           
-           var result= await _identityRepository.AddUserAsync(user, "123456");
-            if (result.Succeeded)
-            {
-                return Ok("ok");
-            }
-            return BadRequest("´íÎó");
+          
         }
     }
 }

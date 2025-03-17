@@ -14,7 +14,7 @@ namespace Listening.Admin.WebAPI.Controllers.EpisodeController
 {
     [Route("api/[controller]/[action]")]
     [ApiController]
-    //[Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Admin")]
     [UnitOfWork(typeof(ListeningDbContext))]
     public class EpisodeController : ControllerBase
     {
@@ -37,6 +37,11 @@ namespace Listening.Admin.WebAPI.Controllers.EpisodeController
         public async Task<ActionResult> AddEpisode(AddEpisodeRequest request)
         {
             var album=await _listeningRepository.FindAlbumByNameAsync(request.albumName);
+
+            if (album == null) 
+            {
+                return BadRequest($"Album_{request.albumName}不存在");
+            }
             Episode episode = new Episode(album.Id, request.sentenceContext, request.sentenceType,
                 request.episodeName);
  

@@ -1,4 +1,4 @@
-﻿using IDentity.WebAPI;
+﻿
 using Listening.Admin.WebAPI.Controllers.AlbumController;
 using Listening.Domain;
 using Listening.Domain.Entity;
@@ -8,13 +8,15 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
+using ZHZ.UnitOkWork;
 
 namespace Listening.Admin.WebAPI.Controllers.CategoryController
 {
     [Route("api/[controller]/[action]")]
     [ApiController]
    // [Authorize(Roles = "Admin")]
-   // [UnitOfWork(typeof(ListeningDbContext))]
+   [ Authorize]
+    
     public class CategoryController : ControllerBase
     {
         private readonly ListeningDbContext _dbCtx;
@@ -31,17 +33,18 @@ namespace Listening.Admin.WebAPI.Controllers.CategoryController
         }
 
         [HttpPost]
-        public async Task<ActionResult> AddCategory(AddCategoryRequest request)
+        [UnitOfWork(typeof(ListeningDbContext))]
+        public async Task<ActionResult> AddCategory([FromBody] AddCategoryRequest request)
         {
+    
 
-           
 
             Category category = new Category(request.CategoryName, request.ShowIndex);
             
 
             _dbCtx.Categories.Add(category);
 
-            await _dbCtx.SaveChangesAsync();
+         
 
             return Ok("添加成功");
 

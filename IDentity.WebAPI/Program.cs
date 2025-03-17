@@ -15,6 +15,7 @@ using FluentValidation.AspNetCore;
 using FluentValidation;
 using IDentity.WebAPI.Controllers;
 using ZHZ.UnitOkWork;
+using GlobalConfigurations;
 
 namespace IDentity.WebAPI
 {
@@ -24,47 +25,60 @@ namespace IDentity.WebAPI
         {
             var builder = WebApplication.CreateBuilder(args);
 
+            builder.ConfigureExtensionService(new InitializerOptions()
+            {
+                EventBusQueueName="1",
+                LogFilePath="E:/Identity.log"
+            });
+
             // Add services to the container.
 
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
-           
+            builder.Services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new() { Title = "IdentityService.WebAPI", Version = "v1" });
+                //c.AddAuthenticationHeader();
+            });
 
-            builder.Services.AddFluentValidationAutoValidation();
-            builder.Services.AddFluentValidationClientsideAdapters();
-            builder.Services.AddValidatorsFromAssemblyContaining<LoginRequest>();
+            
 
-            //JWT配置
-            builder.Services.Configure<JWTSettings>(builder.Configuration.GetSection("JWTSettings"));
-            builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-                .AddJwtBearer(opt =>
-                {
-                    var jwtSettings = builder.Configuration.GetSection("JWTSettings").Get<JWTSettings>();
-                    byte[] keyBytes = Encoding.UTF8.GetBytes(jwtSettings!.Key);
-                    var secKey = new SymmetricSecurityKey(keyBytes);
-                    opt.TokenValidationParameters = new TokenValidationParameters
-                    {
-                        ValidateIssuer = false,
-                        ValidateAudience = false,
-                        // 是否验证Token有效期，使用当前时间与Token的Claims中的NotBefore和Expires对比
-                        ValidateLifetime = true,
-                        //注意这是缓冲过期时间，总的有效时间等于这个时间加上jwt的过期时间，如果不配置，默认是5分钟
-                        ClockSkew = TimeSpan.FromSeconds(4),
-                        ValidateIssuerSigningKey = true,
-                        IssuerSigningKey = secKey,
-                    };
-                });
+
+            //builder.Services.AddFluentValidationAutoValidation();
+            //builder.Services.AddFluentValidationClientsideAdapters();
+            //builder.Services.AddValidatorsFromAssemblyContaining<LoginRequest>();
+
+            ////JWT配置
+            //builder.Services.Configure<JWTSettings>(builder.Configuration.GetSection("JWTSettings"));
+            //builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+            //    .AddJwtBearer(opt =>
+            //    {
+            //        var jwtSettings = builder.Configuration.GetSection("JWTSettings").Get<JWTSettings>();
+            //        byte[] keyBytes = Encoding.UTF8.GetBytes(jwtSettings!.Key);
+            //        var secKey = new SymmetricSecurityKey(keyBytes);
+            //        opt.TokenValidationParameters = new TokenValidationParameters
+            //        {
+            //            ValidateIssuer = false,
+            //            ValidateAudience = false,
+            //            // 是否验证Token有效期，使用当前时间与Token的Claims中的NotBefore和Expires对比
+            //            ValidateLifetime = true,
+            //            //注意这是缓冲过期时间，总的有效时间等于这个时间加上jwt的过期时间，如果不配置，默认是5分钟
+            //            ClockSkew = TimeSpan.FromSeconds(4),
+            //            ValidateIssuerSigningKey = true,
+            //            IssuerSigningKey = secKey,
+            //        };
+            //    });
 
 
             //Identity配置
 
-            builder.Services.AddDbContext<MyIdentityDbContext>(opt =>
-            {
+            //builder.Services.AddDbContext<MyIdentityDbContext>(opt =>
+            //{
 
-                opt.UseSqlServer("Server=.;Database=EnglishListeningWeb;Trusted_Connection=True;Encrypt=True;TrustServerCertificate=True;");
-            });
+            //    opt.UseSqlServer("Server=.;Database=EnglishListeningWeb;Trusted_Connection=True;Encrypt=True;TrustServerCertificate=True;");
+            //});
             builder.Services.AddDataProtection();
             builder.Services.AddIdentityCore<MyUser>(opt =>
             {
@@ -96,16 +110,16 @@ namespace IDentity.WebAPI
                 .AddUserManager<UserManager<MyUser>>()
                 .AddRoleManager<RoleManager<MyRole>>();
 
-            //注入服务
-            builder.Services.AddScoped<IdentityDomainService>();
-            builder.Services.AddScoped<IIdentityRepository, IdentityRepository>();
-            builder.Services.AddScoped<IJwtTokenService, JwtTokenService>();
+            ////注入服务
+            //builder.Services.AddScoped<IdentityDomainService>();
+            //builder.Services.AddScoped<IIdentityRepository, IdentityRepository>();
+            //builder.Services.AddScoped<IJwtTokenService, JwtTokenService>();
 
 
-            builder.Services.Configure<MvcOptions>(opt =>
-            {
-                opt.Filters.Add<UnitOfWorkActionFilter>();
-            });
+            //builder.Services.Configure<MvcOptions>(opt =>
+            //{
+            //    opt.Filters.Add<UnitOfWorkActionFilter>();
+            //});
 
 
 
@@ -120,12 +134,7 @@ namespace IDentity.WebAPI
                 app.UseSwaggerUI();
             }
 
-            app.UseHttpsRedirection();
-
-            app.UseAuthentication();
-
-            app.UseAuthorization();
-
+            app.UseZhzDefault();
 
             app.MapControllers();
 

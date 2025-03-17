@@ -12,6 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\GlobalConfigurations\GlobalConfigurations.csproj" />
     <ProjectReference Include="..\IDentity.Domain\IDentity.Domain.csproj" />
     <ProjectReference Include="..\IDentity.Infrastructure\IDentity.Infrastructure.csproj" />
     <ProjectReference Include="..\ZHZ.UnitOkWork\ZHZ.UnitOkWork.csproj" />

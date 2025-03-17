@@ -6,13 +6,13 @@ using System.Threading.Tasks;
 
 namespace ZHZ.JWT
 {
-    public class JWTSettings
+    public   class JWTSettings
     {
-        public required string Key { get; set; }
-
-        public int ExpireSeconds { get; set; }
-         public string Audience { get; set; }
-        public string     Issuer { get; set; }
+        public required   string Key { get; set; }
+               
+        public  int ExpireMinutes { get; set; }
+         public   string Audience { get; set; }
+        public   string     Issuer { get; set; }
     }
 
     

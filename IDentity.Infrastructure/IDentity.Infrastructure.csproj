@@ -15,6 +15,7 @@
 	</ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\GlobalConfigurations\GlobalConfigurations.csproj" />
     <ProjectReference Include="..\IDentity.Domain\IDentity.Domain.csproj" />
   </ItemGroup>
 

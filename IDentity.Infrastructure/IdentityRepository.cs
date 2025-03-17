@@ -118,5 +118,13 @@ namespace IDentity.Infrastructure
         {
            return  await _userManager.AddToRoleAsync(user, role);
         }
+
+        public Task<IdentityResult> CreateRole(string roleName)
+        {
+            MyRole role = new MyRole();
+            role.Name = roleName;
+
+           return   _roleManager.CreateAsync(role);
+        }
     }
 }

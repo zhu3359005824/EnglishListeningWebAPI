@@ -11,6 +11,7 @@ namespace ZHZ.UnitOkWork
     {
         public async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
         {
+          var result=  await next();
 
             var actionDesc = context.ActionDescriptor as ControllerActionDescriptor;
 
@@ -25,7 +26,7 @@ namespace ZHZ.UnitOkWork
            
             if (hasUnitOfWork == null)
             {
-                await next();
+                
                 return;
             }
             using TransactionScope txScope = new(TransactionScopeAsyncFlowOption.Enabled);
@@ -40,7 +41,7 @@ namespace ZHZ.UnitOkWork
             }
 
 
-            var result = await next();
+            
             if (result.Exception == null)
             {
                 foreach (var dbCtx in dbCtxs)

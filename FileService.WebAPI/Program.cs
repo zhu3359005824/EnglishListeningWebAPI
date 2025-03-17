@@ -1,6 +1,7 @@
 
 using FileService.Domain;
 using FileService.Infrastructure;
+using GlobalConfigurations;
 using Microsoft.EntityFrameworkCore;
 
 namespace FileService.WebAPI
@@ -18,26 +19,11 @@ namespace FileService.WebAPI
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
-
-            builder.Services.AddDbContext<MyDbContext>(c =>
+            builder.ConfigureExtensionService(new InitializerOptions()
             {
-                c.UseSqlServer("Server=.;Database=EnglishListeningWeb;Trusted_Connection=True;Encrypt=True;TrustServerCertificate=True;");
+                EventBusQueueName = "1",
+                LogFilePath = "E:/Identity.log"
             });
-
-            builder.Services.AddScoped<IFileRepository, FileRepository>();
-            builder.Services.AddScoped<ICloundClient, LocalCloundClient>();
-
-            builder.Services.AddScoped<FileDomainService>();
-
-
-
-
-
-
-
-
-
-
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
@@ -47,9 +33,7 @@ namespace FileService.WebAPI
                 app.UseSwaggerUI();
             }
 
-            app.UseHttpsRedirection();
-
-            app.UseAuthorization();
+           app.UseZhzDefault();
 
 
             app.MapControllers();
