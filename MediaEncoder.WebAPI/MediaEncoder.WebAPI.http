@@ -1,0 +1,6 @@
+@MediaEncoder.WebAPI_HostAddress = http://localhost:5226
+
+GET {{MediaEncoder.WebAPI_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
