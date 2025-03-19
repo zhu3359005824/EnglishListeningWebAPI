@@ -45,11 +45,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ZHZ.Infrastructure", "ZHZ.I
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "MediaEncoder", "MediaEncoder", "{FA028176-5814-45A2-9582-C573E431DE5E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MediaEncoder.Domain", "MediaEncoder.Domain\MediaEncoder.Domain.csproj", "{E399EB43-904C-4832-9166-E53556F67F15}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MediaEncoder.Domain", "MediaEncoder.Domain\MediaEncoder.Domain.csproj", "{E399EB43-904C-4832-9166-E53556F67F15}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MediaEncoder.Infrastructure", "MediaEncoder.Infrastructure\MediaEncoder.Infrastructure.csproj", "{A75D2676-6177-444F-9E37-51A64E4BD760}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MediaEncoder.Infrastructure", "MediaEncoder.Infrastructure\MediaEncoder.Infrastructure.csproj", "{A75D2676-6177-444F-9E37-51A64E4BD760}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MediaEncoder.WebAPI", "MediaEncoder.WebAPI\MediaEncoder.WebAPI.csproj", "{2B580146-BB8F-43EF-99C7-B173AC147AB2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MediaEncoder.WebAPI", "MediaEncoder.WebAPI\MediaEncoder.WebAPI.csproj", "{2B580146-BB8F-43EF-99C7-B173AC147AB2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ZHZ.EventBus", "ZHZ.EventBus\ZHZ.EventBus.csproj", "{0410841C-67E7-4357-B8ED-C58EA46964AF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -133,6 +135,10 @@ Global
 		{2B580146-BB8F-43EF-99C7-B173AC147AB2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2B580146-BB8F-43EF-99C7-B173AC147AB2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2B580146-BB8F-43EF-99C7-B173AC147AB2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0410841C-67E7-4357-B8ED-C58EA46964AF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0410841C-67E7-4357-B8ED-C58EA46964AF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0410841C-67E7-4357-B8ED-C58EA46964AF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0410841C-67E7-4357-B8ED-C58EA46964AF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -157,6 +163,7 @@ Global
 		{E399EB43-904C-4832-9166-E53556F67F15} = {FA028176-5814-45A2-9582-C573E431DE5E}
 		{A75D2676-6177-444F-9E37-51A64E4BD760} = {FA028176-5814-45A2-9582-C573E431DE5E}
 		{2B580146-BB8F-43EF-99C7-B173AC147AB2} = {FA028176-5814-45A2-9582-C573E431DE5E}
+		{0410841C-67E7-4357-B8ED-C58EA46964AF} = {B63AFA50-6261-4FDC-A8D3-809AA3C98CDB}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {3FE530E2-AA5A-4189-A8D1-61B7534C2F59}
