@@ -1,11 +1,14 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using RabbitMQ.Client;
+using RabbitMQ.Client.Events;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Reflection;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 using ZHZ.EventBus.Handler;
 
@@ -20,49 +23,50 @@ namespace ZHZ.EventBus.RabbitMQ
     {
 
 
-        private readonly IOptionsSnapshot<IntergrationEventRabbitMQOption> _options;
+       
         private readonly IServiceScopeFactory _serviceScopeFactory;
         private readonly SubscriptionManager _subscriptionManager;
 
         private readonly IConnectionFactory _connectionFactory;
 
         private IChannel _channel;
+
         private IConnection _connection;
+
+        private readonly IServiceScope _serviceScope;
 
 
 
         public string ExchangeName { get; set; }
-        public string HostName { get; set; }
-        public string? UserName { get; set; }
-        public string? Password { get; set; }
+       
 
         public string QueueName { get; set; }
 
-        public RabbitMQEventBus(IOptionsSnapshot<IntergrationEventRabbitMQOption> options, IServiceScopeFactory serviceScopeFactory, SubscriptionManager subscriptionManager, string queueName)
+        public RabbitMQEventBus(IConnectionFactory connectionFactory,IServiceScopeFactory serviceScopeFactory,  string queueName,string exchangeName )
         {
-            _options = options;
+            ExchangeName=exchangeName;
             _serviceScopeFactory = serviceScopeFactory;
-            _subscriptionManager = subscriptionManager;
-            HostName = _options.Value.HostName;
-            Password = _options.Value.Password;
-            ExchangeName = _options.Value.ExchangeName;
-            UserName = _options.Value.UserName;
+
+            _serviceScope = _serviceScopeFactory.CreateScope();
+            _subscriptionManager = new SubscriptionManager();
+          
             QueueName = queueName;
             _subscriptionManager.OnEventRemoved += SubsManager_OnEventRemoved;
-            _connectionFactory = new ConnectionFactory() { HostName = HostName };
+           
             _channel = Start();
+            _connectionFactory = connectionFactory;
         }
 
         public IChannel Start()
         {
-            _connection=_connectionFactory.CreateConnectionAsync().Result;
-              
-            
-     var channel =_connection.CreateChannelAsync().Result;
+            _connection = _connectionFactory.CreateConnectionAsync().Result;
+
+
+            var channel = _connection.CreateChannelAsync().Result;
             //匹配交换机
             channel.ExchangeDeclareAsync(ExchangeName, ExchangeType.Direct);
             //匹配队列
-            channel.QueueDeclareAsync(QueueName,true,false,false,null);
+            channel.QueueDeclareAsync(QueueName, true, false, false, null);
 
             channel.CallbackExceptionAsync += (sender, ea) =>
             {
@@ -74,53 +78,82 @@ namespace ZHZ.EventBus.RabbitMQ
 
 
         }
-        
 
+        /// <summary>
+        /// 当事件管理器中有事件移除时触发的操作
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="eventName"></param>
         private void SubsManager_OnEventRemoved(object? sender, string eventName)
         {
-            if (!_persistentConnection.IsConnected)
+            if (_connection.IsOpen)
             {
-                _persistentConnection.TryConnect();
-            }
-
-            using (var channel = .CreateModel())
-            {
-                channel.QueueUnbind(queue: _queueName,
-                    exchange: _exchangeName,
-                    routingKey: eventName);
-
-                if (_subsManager.IsEmpty)
+                using (var channel = _connection.CreateChannelAsync().Result)
                 {
-                    _queueName = string.Empty;
-                    _consumerChannel.Close();
+                    channel.QueueUnbindAsync(QueueName, ExchangeName, eventName);
                 }
-            }
+                if (_subscriptionManager.IsEmpty)
+                {
+                    QueueName = string.Empty;
+                    _channel.CloseAsync();
+                }
 
-            using (var connection = _connectionFactory.CreateConnectionAsync().Result)
-            using (var channel = connection.CreateChannelAsync().Result)
+
+            }
+        }
+
+        public async void Pulish(string eventName, object? eventData)
+        {
+
+            if (_connection.IsOpen)
             {
+                using (var channel = _connection.CreateChannelAsync().Result)
+                {
+                   await  channel.ExchangeDeclareAsync(ExchangeName, ExchangeType.Direct);
 
+                    byte[] body;
+
+                    if (eventData == null) body = new byte[0];
+                    else
+                    {
+                        JsonSerializerOptions options = new JsonSerializerOptions()
+                        {
+                            WriteIndented = true,
+                        };
+                        body = JsonSerializer.SerializeToUtf8Bytes(eventData, eventData.GetType(), options);
+                    }
+
+
+                    var property = new BasicProperties()
+                    {
+                        DeliveryMode = DeliveryModes.Persistent
+
+                    };
+
+
+                    await channel.BasicPublishAsync(ExchangeName, eventName,  true, property,body);
+
+                }
 
             }
 
-
         }
 
-        public void Pulish(string eventName, object? eventData)
+        public void Subscribe(string eventName, Type handlerType)
         {
-            
-            throw new NotImplementedException();
-           
+           CheckHandlerType(handlerType);
+            ChangeBindEvent(eventName);
+            _subscriptionManager.AddSubscription(eventName, handlerType);
+
+            StartBasicConsume();
         }
 
-        public void Subscription(string eventName, Type handlerType)
+        //取消订阅
+        public void UnSubscribe(string eventName, Type handlerType)
         {
-            throw new NotImplementedException();
-        }
+            CheckHandlerType(handlerType);
 
-        public void UnSubscription(string eventName, Type handlerType)
-        {
-            throw new NotImplementedException();
+            _subscriptionManager.RemoveSubscription(eventName, handlerType);
         }
 
         /// <summary>
@@ -128,7 +161,8 @@ namespace ZHZ.EventBus.RabbitMQ
         /// </summary>
         /// <param name="handlerType"></param>
         /// <exception cref="ArgumentException"></exception>
-        public void CheckHandlerType(Type handlerType) {
+        public void CheckHandlerType(Type handlerType)
+        {
             if (!typeof(IIntergrationEventHandler).IsAssignableFrom(handlerType))
             {
                 throw new ArgumentException($"{handlerType} 不能继承自 IIntergrationEventHandler");
@@ -141,21 +175,119 @@ namespace ZHZ.EventBus.RabbitMQ
         /// <param name="eventName"></param>
         public void ChangeBindEvent(string eventName)
         {
-           var containsKey=_subscriptionManager.HasSubscriptionsByEvent(eventName);
+            var containsKey = _subscriptionManager.HasSubscriptionsByEvent(eventName);
 
             if (!containsKey)
             {
                 if (!_connection.IsOpen)
                 {
-                    _connection=_connectionFactory.CreateConnectionAsync().Result;
+                    _connection = _connectionFactory.CreateConnectionAsync().Result;
                 }
 
-//绑定交换机与队列   
-                _channel.QueueBindAsync(QueueName, ExchangeName, eventName,null);
+                //绑定交换机与队列   
+                _channel.QueueBindAsync(QueueName, ExchangeName, eventName, null);
 
 
             }
         }
 
+
+
+
+        public void Dispose()
+        {
+            if (_connection != null)
+            {
+                _channel.Dispose();
+            }
+
+            _subscriptionManager.Clear();
+
+            _connection.Dispose();
+
+            _serviceScope.Dispose();
+
+        }
+
+        /// <summary>
+        /// 开始消费
+        /// </summary>
+        private async void StartBasicConsume()
+        {
+            if (_channel != null)
+            {
+                var consumer = new AsyncEventingBasicConsumer(_channel);
+
+                consumer.ReceivedAsync += Consumer_Received;
+
+                await _channel.BasicConsumeAsync(QueueName, false, consumer);
+            }
+        }
+
+        /// <summary>
+        /// 消费者接受事件
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="eventArgs"></param>
+        /// <returns></returns>
+        private async Task Consumer_Received(object sender, BasicDeliverEventArgs eventArgs)
+        {
+            var eventName = eventArgs.RoutingKey;
+
+            //框架要求所有的消息都是字符串的json
+            var message = Encoding.UTF8.GetString(eventArgs.Body.Span);
+
+            try
+            {
+                await ProcessEvent(eventName, message);
+
+                await _channel.BasicAckAsync(eventArgs.DeliveryTag, false);
+
+
+            }
+            catch (Exception ex)
+            {
+                Debug.Fail(ex.ToString());
+            }
+
+
+
+
+        }
+
+        /// <summary>
+        /// 处理事件
+        /// </summary>
+        /// <param name="eventName"></param>
+        /// <param name="message"></param>
+        /// <returns></returns>
+        /// <exception cref="ApplicationException"></exception>
+        private async Task ProcessEvent(string eventName, string message)
+        {
+            if (_subscriptionManager.HasSubscriptionsByEvent(eventName))
+            {
+                var subscriptionsHandlerType = _subscriptionManager.GetHandlerByEvent(eventName);
+
+                foreach (var handlerType in subscriptionsHandlerType)
+                {
+                    //各自在不同的Scope中，避免DbContext等的共享造成如下问题：
+                    //The instance of entity type cannot be tracked because another instance
+                    using var scope = _serviceScope.ServiceProvider.CreateScope();
+                    var handler = scope.ServiceProvider.GetService(handlerType) as IIntergrationEventHandler;
+
+                    if (handler == null)
+                    {
+                        throw new ApplicationException($"无法创建{handlerType}的服务");
+                    }
+
+                    await handler.Handle(eventName, message);
+                }
+            }
+            else
+            {
+                string entryAsm = Assembly.GetEntryAssembly().GetName().Name;
+                Debug.WriteLine($"找不到可以处理eventName={eventName}的处理程序，entryAsm:{entryAsm}");
+            }
+        }
     }
 }

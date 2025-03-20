@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 
 
-namespace GlobalConfigurations
+namespace ZHZ.Tools
 {
     /// <summary>
     /// 详情见 https://www.cnblogs.com/bsx133/p/18597830
@@ -49,7 +49,7 @@ namespace GlobalConfigurations
         /// <returns></returns>
         private static bool IsSystemAssembly(Assembly assembly)
         {
-            var asmAttr=assembly.GetCustomAttribute<AssemblyCompanyAttribute>();
+            var asmAttr = assembly.GetCustomAttribute<AssemblyCompanyAttribute>();
 
             if (asmAttr == null)
             {
@@ -57,7 +57,7 @@ namespace GlobalConfigurations
             }
             else
             {
-              return  asmAttr.Company.Contains("Microsoft");
+                return asmAttr.Company.Contains("Microsoft");
             }
         }
 

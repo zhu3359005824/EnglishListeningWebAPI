@@ -9,8 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
-using Serilog;
-using StackExchange.Redis;
+
 using Swashbuckle.AspNetCore.SwaggerGen;
 using System;
 using System.Collections.Generic;
@@ -20,8 +19,9 @@ using System.Runtime.CompilerServices;
 using System.Text;
 
 using System.Threading.Tasks;
-using ZHZ.Infrastructure.EFCore;
+
 using ZHZ.JWT;
+using ZHZ.Tools;
 using ZHZ.UnitOkWork;
 
 namespace GlobalConfigurations

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ZHZ.EventBus;
 
 namespace GlobalConfigurations
 {/// <summary>
@@ -15,7 +16,7 @@ namespace GlobalConfigurations
         public static IApplicationBuilder 
             UseZhzDefault(this IApplicationBuilder app)
         {
-
+            app.UseEventBus();
             app.UseCors();
 
             app.UseForwardedHeaders();

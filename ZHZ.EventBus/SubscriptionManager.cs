@@ -27,7 +27,12 @@ namespace ZHZ.EventBus
         public void Clear()=>_handlers.Clear();
 
 
-
+        /// <summary>
+        /// 将事件添加到Handler中
+        /// </summary>
+        /// <param name="eventName"></param>
+        /// <param name="eventHandlerType"></param>
+        /// <exception cref="ArgumentException"></exception>
         public void AddSubscription(string eventName,Type eventHandlerType)
         {
             if (!HasSubscriptionsByEvent(eventName))
