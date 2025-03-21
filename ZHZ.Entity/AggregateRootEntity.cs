@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace ZHZ.Entity
 {
-    public class AggregateRootEntity: BaseEntity,IAggregateRoot
+    public class AggregateRootEntity: BaseEntity,IAggregateRoot,ISoftDelete
     {
         public AggregateRootEntity()
         {

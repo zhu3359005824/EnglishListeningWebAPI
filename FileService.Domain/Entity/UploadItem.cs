@@ -12,13 +12,13 @@ namespace FileService.Domain.Entity
 {
     public class UploadItem :AggregateRootEntity
     {
-        public Guid Id { get; init; }
+      
         public string FileName { get; private set; }
 
         public string FileSHA256Hash { get; init; }
 
         public long FileByteSize { get; init; }
-        public DateTime CreateTime { get; init; }
+       
 
 
 

@@ -4,10 +4,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ZHZ.Entity;
 
 namespace IDentity.Domain.Entity
 {
-    public class MyUser:IdentityUser<Guid>
+    public class MyUser:IdentityUser<Guid>,ISoftDelete
     {
         public DateTime? CreateTime { get; set; }
 

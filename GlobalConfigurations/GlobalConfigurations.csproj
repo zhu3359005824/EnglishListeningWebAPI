@@ -22,9 +22,16 @@
 
 	<ItemGroup>
 	  <ProjectReference Include="..\ZHZ.EventBus\ZHZ.EventBus.csproj" />
+	  <ProjectReference Include="..\ZHZ.Infrastructure\ZHZ.Infrastructure.csproj" />
 	  <ProjectReference Include="..\ZHZ.JWT\ZHZ.JWT.csproj" />
 	  <ProjectReference Include="..\ZHZ.Tools\ZHZ.Tools.csproj" />
 	  <ProjectReference Include="..\ZHZ.UnitOkWork\ZHZ.UnitOkWork.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <None Update="config.json">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
 	</ItemGroup>
 
 </Project>

@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace ZHZ.EventBus.Handler
 {
     /// <summary>
-    /// 
+    /// 将事件数据转换成类
     /// </summary>
     /// <typeparam name="T"></typeparam>
     public abstract class JsonIntergrationEventHandler<T> : IIntergrationEventHandler

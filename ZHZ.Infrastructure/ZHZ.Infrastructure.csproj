@@ -13,7 +13,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="EFCore\" />
+    <ProjectReference Include="..\ZHZ.Entity\ZHZ.Entity.csproj" />
   </ItemGroup>
 
 </Project>

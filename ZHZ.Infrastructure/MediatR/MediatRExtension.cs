@@ -7,6 +7,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using ZHZ.Entity;
 
 namespace ZHZ.Infrastructure.MediatR
 {
@@ -18,9 +19,24 @@ namespace ZHZ.Infrastructure.MediatR
 
         }
 
-        public static async Task DispatchDomainEventAsync(this IMediator,DbContext ctx)
+        /// <summary>
+        /// 发出事件
+        /// </summary>
+        /// <param name=""></param>
+        /// <param name="ctx"></param>
+        /// <returns></returns>
+        public static async Task DispatchDomainEventAsync(this IMediator mediator,DbContext ctx)
         {
+            var domainEntity=ctx.ChangeTracker.Entries<IDomainEvents>().Where(x=>x.Entity.GetDomainEvents().Any());
 
+            var domainEvent=domainEntity.SelectMany(x=>x.Entity.GetDomainEvents().ToList());
+
+            domainEntity.ToList().ForEach(e=>e.Entity.ClearDomainEvents());
+
+            foreach(var item in domainEvent)
+            {
+                await mediator.Publish(item);
+            }
         }
     }
 }

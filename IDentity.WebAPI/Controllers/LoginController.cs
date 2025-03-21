@@ -1,9 +1,11 @@
 
 using IDentity.Domain;
 using IDentity.Domain.Entity;
+using IDentity.WebAPI.Event;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using ZHZ.EventBus;
 using ZHZ.Tools;
 using ZHZ.UnitOkWork;
 
@@ -17,13 +19,16 @@ namespace IDentity.WebAPI.Controllers
 
         private readonly IdentityDomainService _identityDomainService;
 
-        public LoginController(IIdentityRepository identityRepository, IdentityDomainService identityDomainService)
+        private readonly IEventBus _eventBus;
+
+        public LoginController(IIdentityRepository identityRepository, IdentityDomainService identityDomainService, IEventBus eventBus)
         {
             _identityRepository = identityRepository;
             _identityDomainService = identityDomainService;
+            _eventBus = eventBus;
         }
 
-        
+
 
 
         [HttpPost]
@@ -73,6 +78,8 @@ namespace IDentity.WebAPI.Controllers
                 
                 if (result.Succeeded)
                 {
+                    //实现事件发布
+                    _eventBus.Pulish("IdentityService.User.Created", new UserCreatedEvent(user.Id,user.UserName,user.PasswordHash,user.PhoneNumber));
                     return Ok("ok");
                 }
                 return BadRequest("错误");

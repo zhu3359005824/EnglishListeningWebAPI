@@ -11,6 +11,7 @@
 		<PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.6.1" />
 	</ItemGroup>
 	<ItemGroup>
+	  <ProjectReference Include="..\ZHZ.Entity\ZHZ.Entity.csproj" />
 	  <ProjectReference Include="..\ZHZ.JWT\ZHZ.JWT.csproj" />
 	  <ProjectReference Include="..\ZHZ.Tools\ZHZ.Tools.csproj" />
 	</ItemGroup>

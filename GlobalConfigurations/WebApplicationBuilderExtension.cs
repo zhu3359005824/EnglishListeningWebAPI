@@ -19,7 +19,9 @@ using System.Runtime.CompilerServices;
 using System.Text;
 
 using System.Threading.Tasks;
-
+using ZHZ.EventBus;
+using ZHZ.EventBus.RabbitMQ;
+using ZHZ.Infrastructure.MediatR;
 using ZHZ.JWT;
 using ZHZ.Tools;
 using ZHZ.UnitOkWork;
@@ -75,7 +77,7 @@ namespace GlobalConfigurations
                 c.AddAuthenticationHeader();
             });
 
-
+            #region 数据验证
             //-------------------------//
 
             //----启用数据验证--------------------//
@@ -148,11 +150,11 @@ namespace GlobalConfigurations
                 builder.Services.AddValidatorsFromAssembly(assembly);
                 builder.Services.AddValidatorsFromAssemblyContaining(assembly.GetType());
             }
+            #endregion
 
 
-           
 
-            //service.AddMediatR(assemblies);
+            service.AddMediatR(assemblies);
 
 
 
@@ -180,10 +182,11 @@ namespace GlobalConfigurations
             );
 
 
-
             
-          //  service.Configure<IntegrationEventRabbitMQOptions>(configuration.GetSection("RabbitMQ"));
-            //service.AddEventBus(initOptions.EventBusQueueName, assemblies);
+            
+            service.Configure<IntergrationEventRabbitMQOption>(configuration.GetSection("RabbitMQ"));
+
+            service.AddEventBus(initializerOptions.EventBusQueueName, assemblies);
 
             ////Redis的配置
             //string redisConnStr = configuration.GetValue<string>("Redis:ConnStr");
