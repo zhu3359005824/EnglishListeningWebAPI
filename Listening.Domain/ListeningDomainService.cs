@@ -68,6 +68,8 @@ namespace Listening.Domain
            var episode= await _listeningRepository.FindEpisodeByIdAsync(episodeId);
             episode.ChangeShowIndex(index);
 
+            
+
         }
     }
 }

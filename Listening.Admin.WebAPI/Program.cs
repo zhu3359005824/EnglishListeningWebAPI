@@ -13,6 +13,7 @@ using Listening.Admin.WebAPI.Controllers.CategoryController;
 using Listening.Admin.WebAPI.Controllers.EpisodeController;
 using Listening.Admin.WebAPI.Controllers.AlbumController;
 using GlobalConfigurations;
+using Listening.Admin.WebAPI.Hubs;
 
 namespace Listening.Admin.WebAPI
 {
@@ -30,6 +31,8 @@ namespace Listening.Admin.WebAPI
             builder.Services.AddSwaggerGen();
 
 
+            builder.Services.AddSignalR();
+            builder.Services.AddScoped<EncodingEpisodeHelper>();
             builder.ConfigureExtensionService(new InitializerOptions()
             {
                 EventBusQueueName = "1",
@@ -51,6 +54,7 @@ namespace Listening.Admin.WebAPI
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }
+            app.MapHub<EpisodeEncodingStatusHub>("/Hubs/EpisodeEncodingStatusHub");
 
            app.UseZhzDefault();
 

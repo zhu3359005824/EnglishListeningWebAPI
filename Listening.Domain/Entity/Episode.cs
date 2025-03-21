@@ -1,4 +1,5 @@
-﻿using Listening.Domain.SentenceParser;
+﻿using Listening.Domain.Event;
+using Listening.Domain.SentenceParser;
 using Listening.Domain.ValueObject;
 using System;
 using System.Collections.Generic;
@@ -40,6 +41,7 @@ namespace Listening.Domain.Entity
             SentenceContxt = sentenceContxt;
             SentenceType = sentenceType;
             EpisodeName = episodeName;
+            this.AddDomainEvent(new EpisodeCreatedEvent(this));
         }
 
         public IEnumerable<Sentence> GetSentenceContext()
@@ -57,12 +59,19 @@ namespace Listening.Domain.Entity
         public Episode ChangeShowIndex(int value)
         {
             this.ShowIndex = value;
+            this.AddDomainEventIfAbsent(new EpisodeUpdatedEvent(this));
             return this;
         }
 
         public   void SetRealSeconds(double seconds)
         {
             this.RealSeconds = seconds;
+        }
+
+        public override void SoftDelete()
+        {
+            base.SoftDelete();
+            this.AddDomainEvent(new EpisodeDeletedEvent(this.Id));
         }
 
 

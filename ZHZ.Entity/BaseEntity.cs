@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace ZHZ.Entity
 {
-    public class BaseEntity : IDomainEvents
+    public class BaseEntity : IDomainEvents, IEntity
     {
 
         public Guid Id { get; init; }= Guid.NewGuid();

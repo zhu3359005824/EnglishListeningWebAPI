@@ -29,7 +29,7 @@ namespace ZHZ.Entity
         public DateTime? DeleteTime { get; private set; }
 
 
-        public void SoftDelete()
+        public virtual void SoftDelete()
         {
             this.IsDeleted = true;
             this.DeleteTime=DateTime.Now;

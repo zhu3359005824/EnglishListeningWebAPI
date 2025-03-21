@@ -21,7 +21,7 @@ namespace ZHZ.EventBus
         /// </summary>
         /// <param name="eventName"></param>
         /// <param name="eventData"></param>
-        void Pulish(string eventName, object? eventData);
+        void Publish(string eventName, object? eventData);
 
         /// <summary>
         /// 订阅

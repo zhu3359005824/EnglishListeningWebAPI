@@ -1,4 +1,5 @@
-﻿using ZHZ.EventBus;
+﻿using System.Diagnostics;
+using ZHZ.EventBus;
 using ZHZ.EventBus.Handler;
 
 namespace IDentity.WebAPI.Event
@@ -9,7 +10,9 @@ namespace IDentity.WebAPI.Event
        
         public override Task HandleJson(string eventName, UserCreatedEvent? eventData)
         {
-            throw new NotImplementedException();
+            Console.WriteLine(eventData); 
+
+            return Task.CompletedTask;
         }
     }
 }

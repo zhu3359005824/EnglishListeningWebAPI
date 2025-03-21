@@ -79,7 +79,7 @@ namespace IDentity.WebAPI.Controllers
                 if (result.Succeeded)
                 {
                     //实现事件发布
-                    _eventBus.Pulish("IdentityService.User.Created", new UserCreatedEvent(user.Id,user.UserName,user.PasswordHash,user.PhoneNumber));
+                    _eventBus.Publish("IdentityService.User.Created", new UserCreatedEvent(user.Id,user.UserName,user.PasswordHash,user.PhoneNumber));
                     return Ok("ok");
                 }
                 return BadRequest("错误");

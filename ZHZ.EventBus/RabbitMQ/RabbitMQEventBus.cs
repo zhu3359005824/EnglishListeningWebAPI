@@ -14,10 +14,11 @@ using ZHZ.EventBus.Handler;
 
 namespace ZHZ.EventBus.RabbitMQ
 {/// <summary>
+/// 事件总线核心类
 /// 在该类中
 /// 1.完成交换机与队列的绑定 使用RabbitMQ的routing模式
 /// 2.确定事件的监听者
-/// 3.
+/// 
 /// </summary>
     public class RabbitMQEventBus : IEventBus
     {
@@ -102,7 +103,7 @@ namespace ZHZ.EventBus.RabbitMQ
             }
         }
 
-        public async void Pulish(string eventName, object? eventData)
+        public async void Publish(string eventName, object? eventData)
         {
 
             if (_connection.IsOpen)

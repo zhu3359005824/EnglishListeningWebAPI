@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
-
+using StackExchange.Redis;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using System;
 using System.Collections.Generic;
@@ -188,14 +188,14 @@ namespace GlobalConfigurations
 
             service.AddEventBus(initializerOptions.EventBusQueueName, assemblies);
 
-            ////Redis的配置
-            //string redisConnStr = configuration.GetValue<string>("Redis:ConnStr");
-            //IConnectionMultiplexer redisConnMultiplexer = ConnectionMultiplexer.Connect(redisConnStr);
-            //service.AddSingleton(typeof(IConnectionMultiplexer), redisConnMultiplexer);
-            //service.Configure<ForwardedHeadersOptions>(options =>
-            //{
-            //    options.ForwardedHeaders = ForwardedHeaders.All;
-            //});
+            //Redis的配置
+            string redisConnStr = configuration.GetValue<string>("Redis:ConnStr");
+            IConnectionMultiplexer redisConnMultiplexer = ConnectionMultiplexer.Connect(redisConnStr);
+            service.AddSingleton(typeof(IConnectionMultiplexer), redisConnMultiplexer);
+            service.Configure<ForwardedHeadersOptions>(options =>
+            {
+                options.ForwardedHeaders = ForwardedHeaders.All;
+            });
         }
     }
 }

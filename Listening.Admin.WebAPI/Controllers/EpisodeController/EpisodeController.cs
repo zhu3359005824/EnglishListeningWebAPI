@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
+using ZHZ.EventBus;
 using ZHZ.UnitOkWork;
 
 namespace Listening.Admin.WebAPI.Controllers.EpisodeController
@@ -23,12 +24,17 @@ namespace Listening.Admin.WebAPI.Controllers.EpisodeController
         private readonly ListeningDomainService _listeningDomainService;
         private readonly IMemoryCache _memoryCache;
 
-        public EpisodeController(ListeningDbContext dbCtx, IListeningRepository listeningRepository, ListeningDomainService listeningDomainService, IMemoryCache memoryCache)
+        private readonly IEventBus _eventBus;
+        private readonly EncodingEpisodeHelper _episodeHelper;
+
+        public EpisodeController(ListeningDbContext dbCtx, IListeningRepository listeningRepository, ListeningDomainService listeningDomainService, IMemoryCache memoryCache, IEventBus eventBus, EncodingEpisodeHelper episodeHelper)
         {
             _dbCtx = dbCtx;
             _listeningRepository = listeningRepository;
             _listeningDomainService = listeningDomainService;
             _memoryCache = memoryCache;
+            _eventBus = eventBus;
+            _episodeHelper = episodeHelper;
         }
 
 
@@ -42,12 +48,30 @@ namespace Listening.Admin.WebAPI.Controllers.EpisodeController
             {
                 return BadRequest($"Album_{request.albumName}不存在");
             }
-            Episode episode = new Episode(album.Id, request.sentenceContext, request.sentenceType,
-                request.episodeName);
- 
-            _dbCtx.Episodes.Add(episode);
 
-            return Ok("添加成功");
+            if(request.sentenceType.Equals("m4a",StringComparison.OrdinalIgnoreCase))
+            {
+                Episode episode = new Episode(album.Id, request.sentenceContext, request.sentenceType,
+                request.episodeName);
+
+                _dbCtx.Episodes.Add(episode);
+
+                return Ok("添加成功");
+            }
+            else
+            {
+                Guid episodeId = Guid.NewGuid();
+
+                EncodingEpisodeInfo encodingEpisode=new EncodingEpisodeInfo()
+                {
+                    Id = episodeId,
+                    EpisodeName = request.episodeName,
+                 
+                    AlbumName=request.albumName,
+                    AlbumId= _listeningRepository.
+                };
+            }
+            
 
         }
 
