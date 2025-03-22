@@ -16,7 +16,7 @@ namespace GlobalConfigurations
         public static IApplicationBuilder 
             UseZhzDefault(this IApplicationBuilder app)
         {
-            app.UseEventBus();
+           // app.UseEventBus();
             app.UseCors();
 
             app.UseForwardedHeaders();

@@ -16,6 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\FileService.Infrastructure\FileService.Infrastructure.csproj" />
     <ProjectReference Include="..\MediaEncoder.Domain\MediaEncoder.Domain.csproj" />
     <ProjectReference Include="..\MediaEncoder.Infrastructure\MediaEncoder.Infrastructure.csproj" />
   </ItemGroup>

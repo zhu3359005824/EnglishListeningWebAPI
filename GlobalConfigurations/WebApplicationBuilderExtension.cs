@@ -2,22 +2,27 @@
 using FluentValidation.AspNetCore;
 using GlobalConfigurations.AllDbContextInitializer;
 using GlobalConfigurations.注册所有项目中的服务;
+using GlobalConfigurations.配置类;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Identity.Client;
 using Newtonsoft.Json;
 using StackExchange.Redis;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text;
-
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using ZHZ.EventBus;
 using ZHZ.EventBus.RabbitMQ;
@@ -35,11 +40,47 @@ namespace GlobalConfigurations
             builder.Configuration.AddEnvironmentVariables();
             //依赖注入容器
             IServiceCollection service = builder.Services;
+            IConfiguration configuration=builder.Configuration;
 
-            IConfiguration configuration=
-                builder.Configuration;
 
-           IEnumerable<Assembly> assemblies = ReflectionHelper.GetAllReferencedAssemblies();
+
+            string projectRootPath = Directory.GetParent(AppContext.BaseDirectory)!.Parent!.Parent!.Parent!.Parent!.FullName;
+            string filePath = Path.Combine(projectRootPath, "GlobalConfigurations/config.json");
+
+
+
+            builder.Configuration.AddJsonFile(filePath);
+
+
+            builder.Services.Configure<JWTSettings>(builder.Configuration.GetSection("JWTSettings"));
+            builder.Services.Configure<IntergrationEventRabbitMQOption>(builder.Configuration.GetSection("IntergrationEventRabbitMQOption"));
+
+            builder.Services.Configure<MyRedisOption>(builder.Configuration.GetSection("MyRedisOption"));
+
+
+
+            service.AddLogging(opt =>
+            {
+               
+            })
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            // builder.Configuration.AddJsonFile();
+
+            IEnumerable<Assembly> assemblies = ReflectionHelper.GetAllReferencedAssemblies();
             service.RunComponentInitializer(assemblies);
 
 
@@ -58,17 +99,9 @@ namespace GlobalConfigurations
             builder.Services.AddAuthorization();
 
           
-           string c =Environment.GetEnvironmentVariable("JWTSettings");
-            JWTSettings jWTSettings = JsonConvert.DeserializeObject<JWTSettings>(c);
-            builder.Services.Configure<JWTSettings>(options =>
-            {
-                options.Issuer = jWTSettings.Issuer;
-                options.Audience = jWTSettings.Audience;
-                options.Key = jWTSettings.Key;
-                options.ExpireMinutes = jWTSettings.ExpireMinutes;
-            });
+           
 
-            builder.Services.AddJWTAuthentication(jWTSettings);
+            builder.Services.AddJWTAuthentication(configuration.GetSection("JWTSettings").Get<JWTSettings>());
 
             //启用Swagger中的[Authorize]
 
@@ -166,8 +199,21 @@ namespace GlobalConfigurations
             });
             service.Configure<JsonOptions>(options =>
             {
-                //设置时间格式。而非“2008-08-08T08:08:08”这样的格式
+                options.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
+
+                // 2. 处理日期时间格式
+                options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
                 options.JsonSerializerOptions.Converters.Add(new DateTimeJsonConverter("yyyy-MM-dd HH:mm:ss"));
+
+                // 3. 忽略循环引用
+                options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
+
+                // 4. 允许注释（开发环境推荐）
+                options.JsonSerializerOptions.ReadCommentHandling = JsonCommentHandling.Skip;
+
+                // 5. 处理枚举值为字符串
+                options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+
             });
 
             //添加跨域
@@ -184,12 +230,12 @@ namespace GlobalConfigurations
 
             
             
-            service.Configure<IntergrationEventRabbitMQOption>(configuration.GetSection("RabbitMQ"));
+           
 
-            service.AddEventBus(initializerOptions.EventBusQueueName, assemblies);
+          service.AddEventBus(initializerOptions.EventBusQueueName, assemblies);
 
             //Redis的配置
-            string redisConnStr = configuration.GetValue<string>("Redis:ConnStr");
+            string redisConnStr = configuration.GetSection("MyRedisOption").Get<MyRedisOption>().ConnectionString;
             IConnectionMultiplexer redisConnMultiplexer = ConnectionMultiplexer.Connect(redisConnStr);
             service.AddSingleton(typeof(IConnectionMultiplexer), redisConnMultiplexer);
             service.Configure<ForwardedHeadersOptions>(options =>

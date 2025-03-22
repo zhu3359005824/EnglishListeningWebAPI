@@ -1,16 +1,24 @@
 {
-  "exclude": [
-    "**/bin",
-    "**/bower_components",
-    "**/jspm_packages",
-    "**/node_modules",
-    "**/obj",
-    "**/platforms"
-  ],
+
   "JWTSettings": {
     "key": "zhuhongzhi1234560010829@qq.com789456wqwqe",
     "ExpireSeconds": 600,
     "Audience": "",
     "Issuer": ""
+  },
+  "IntergrationEventRabbitMQOption": {
+    "ExchangeName": "ZHZ",
+    "HostName": "localhost",
+    "UserName": "",
+    "Password": ""
+  },
+  "MyRedisOption": {
+    "ConnectionString": "127.0.0.1:6379,password=123456,abortConnect=false"
+  },
+  "MyDbOption": {
+    "ConnectionString": "Server=.;Database=EnglishListeningWeb;Trusted_Connection=True;Encrypt=True;TrustServerCertificate=True;MultipleActiveResultSets=true;"
   }
+
+
 }
+

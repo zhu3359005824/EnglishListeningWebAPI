@@ -17,7 +17,7 @@ namespace MediaEncoder.Infrastructure
            return "m4a".Equals(OutputType,StringComparison.OrdinalIgnoreCase);
         }
 
-        public async Task EncodeAsync(FileInfo sourceFile, FileInfo destinationFile,  string[]? args, CancellationToken ct)
+        public async Task EncodeAsync(FileInfo sourceFile, FileInfo destinationFile,  string destType, string[]? args, CancellationToken ct)
         {
             //可以用“FFmpeg.AutoGen”，因为他是bingding库，不用启动独立的进程，更靠谱。但是编程难度大，这里重点不是FFMPEG，所以先用命令行实现
             var inputFile = new FFmpeg.NET.InputFile(sourceFile);

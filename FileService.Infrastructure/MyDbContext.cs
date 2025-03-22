@@ -10,14 +10,12 @@ using ZHZ.Infrastructure.EFCore;
 
 namespace FileService.Infrastructure
 {
-    public class MyDbContext:BaseDbcontext
+    public class MyDbContext:DbContext
     {
        public DbSet<UploadItem> UploadItems {  get; set; }
        
 
-        public MyDbContext(DbContextOptions options, IMediator mediator) : base(options, mediator)
-        {
-        }
+       public MyDbContext(DbContextOptions<MyDbContext> options) : base(options) { }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

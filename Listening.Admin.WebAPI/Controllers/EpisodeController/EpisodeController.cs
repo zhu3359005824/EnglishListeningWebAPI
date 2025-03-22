@@ -40,7 +40,7 @@ namespace Listening.Admin.WebAPI.Controllers.EpisodeController
 
 
         [HttpPost]
-        public async Task<ActionResult> AddEpisode(AddEpisodeRequest request)
+        public async Task<ActionResult<Guid>> AddEpisode(AddEpisodeRequest request)
         {
             var album=await _listeningRepository.FindAlbumByNameAsync(request.albumName);
 
@@ -56,21 +56,34 @@ namespace Listening.Admin.WebAPI.Controllers.EpisodeController
 
                 _dbCtx.Episodes.Add(episode);
 
-                return Ok("添加成功");
+                return episode.Id;
             }
             else
             {
                 Guid episodeId = Guid.NewGuid();
 
-                EncodingEpisodeInfo encodingEpisode=new EncodingEpisodeInfo()
+                EncodingEpisodeInfo encodingEpisode = new EncodingEpisodeInfo(
+
+                     episodeId,
+                     _listeningRepository.FindAlbumByNameAsync(request.albumName).Result.Id,
+                      request.albumName,
+                      request.episodeName,
+                    request.sentenceContext,
+                    request.sentenceType,
+                    "Created");
+             await   _episodeHelper.AddEncodingEpisodeAsync(request.episodeName, encodingEpisode);
+
+                //启动转码
+                _eventBus.Publish("MediaEncoding.Created", new
                 {
-                    Id = episodeId,
-                    EpisodeName = request.episodeName,
-                 
-                    AlbumName=request.albumName,
-                    AlbumId= _listeningRepository.
-                };
+                    MediaId=episodeId,
+                    OutputType="m4a",
+                    SourceSystem="Listening"
+                });
+
+                return episodeId;
             }
+
             
 
         }

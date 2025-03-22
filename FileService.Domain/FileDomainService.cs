@@ -60,7 +60,8 @@ namespace FileService.Domain
                 stream.Position = 0;
 
                 Guid id = Guid.NewGuid();
-                UploadItem uploadItem = new UploadItem(id,CreateDateTime,fileName,fileSHA256Hash,fileByteSize);
+                Uri srcUrl=new Uri(fullPath);
+                UploadItem uploadItem = new UploadItem(id,CreateDateTime,fileName,fileSHA256Hash,fileByteSize,srcUrl);
 
                 return uploadItem;
 

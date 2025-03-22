@@ -19,6 +19,8 @@ namespace FileService.WebAPI
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
+            
+
             builder.ConfigureExtensionService(new InitializerOptions()
             {
                 EventBusQueueName = "1",

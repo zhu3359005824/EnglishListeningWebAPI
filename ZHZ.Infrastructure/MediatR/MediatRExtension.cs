@@ -15,7 +15,10 @@ namespace ZHZ.Infrastructure.MediatR
     {
         public static IServiceCollection AddMediatR(this IServiceCollection services,IEnumerable<Assembly> assemblies)
         {
-            return services.AddMediatR(assemblies.ToArray());
+            return services.AddMediatR(c =>
+            {
+                c.RegisterServicesFromAssemblies(assemblies.ToArray());
+            });
 
         }
 

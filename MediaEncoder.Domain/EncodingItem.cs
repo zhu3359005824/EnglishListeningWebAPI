@@ -42,7 +42,7 @@ namespace MediaEncoder.Domain
 
        
 
-        public EncodingItem(string sourceSystem, long fileByteSize, string fileName, string fileSHA256Hash, Uri sourceUrl, Uri outputUrl, string outType, ItemStatus status, string logText):base()
+        public EncodingItem(string sourceSystem, long fileByteSize, string fileName, string fileSHA256Hash, Uri? sourceUrl, Uri? outputUrl, string outType, ItemStatus status, string logText):base()
         {
             SourceSystem = sourceSystem;
             FileByteSize = fileByteSize;
@@ -92,7 +92,10 @@ namespace MediaEncoder.Domain
             Fail($"转码失败{exception}");
         }
 
-
-
+        public void ChangeFileMeta(long fileSize, string srcFileHash)
+        {
+            this.FileByteSize = fileSize;
+            this.FileSHA256Hash = srcFileHash;
+        }
     }
 }

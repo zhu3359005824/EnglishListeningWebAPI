@@ -33,7 +33,9 @@ namespace FileService.WebAPI.Controllers
           await  _dbContext.UploadItems.AddAsync(uploadItem);
           await  _dbContext.SaveChangesAsync();
 
-            return Ok("成功");
+            
+
+            return Ok($"成功");
             
         }
     }

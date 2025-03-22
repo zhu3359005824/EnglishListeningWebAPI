@@ -10,6 +10,9 @@ using ZHZ.Infrastructure.MediatR;
 
 namespace ZHZ.Infrastructure.EFCore
 {
+    /// <summary>
+    /// 具有事件的服务才实现
+    /// </summary>
     public class BaseDbcontext:DbContext
     {
 
