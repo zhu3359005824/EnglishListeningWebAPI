@@ -55,7 +55,7 @@ namespace MediaEncoder.Domain
             LogText = logText;
 
 
-            this.AddDomainEvent(new EncodingItemCreateEvent(this.Id, SourceSystem, OutputUrl));
+            this.AddDomainEvent(new EncodingItemCreatedEvent(this.Id, SourceSystem, OutputUrl));
         }
 
         public void Start()
@@ -63,7 +63,7 @@ namespace MediaEncoder.Domain
             this.Status=ItemStatus.Running;
             this.LogText = "正在进行转码";
             //添加事件
-            AddDomainEvent(new EncodingItemRunningEvent(this.Id, SourceSystem));
+            AddDomainEvent(new EncodingItemStartedEvent(this.Id, SourceSystem));
 
 
         }
@@ -84,7 +84,7 @@ namespace MediaEncoder.Domain
             this.Status=ItemStatus.Failed;
             this.LogText=logText;
             //添加事件
-            AddDomainEvent(new EncodingItemFailEvent(this.Id, SourceSystem, logText));
+            AddDomainEvent(new EncodingItemFailedEvent(this.Id, SourceSystem, logText));
         }
 
         public void Fail(Exception exception)

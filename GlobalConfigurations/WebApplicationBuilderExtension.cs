@@ -59,10 +59,7 @@ namespace GlobalConfigurations
 
 
 
-            service.AddLogging(opt =>
-            {
-               
-            })
+           
 
 
 

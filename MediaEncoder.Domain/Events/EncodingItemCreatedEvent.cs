@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace MediaEncoder.Domain.Events
 {
-    public record EncodingItemCreateEvent(Guid Id,string SourceSystem,Uri OutputUrl):INotification
+    public record EncodingItemCreatedEvent(Guid Id,string SourceSystem,Uri OutputUrl):INotification
     {
     }
 }

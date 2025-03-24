@@ -76,7 +76,7 @@ namespace Listening.Admin.WebAPI.Controllers.EpisodeController
                 //启动转码
                 _eventBus.Publish("MediaEncoding.Created", new
                 {
-                    MediaId=episodeId,
+                    EpisodeName= encodingEpisode.EpisodeName,
                     OutputType="m4a",
                     SourceSystem="Listening"
                 });

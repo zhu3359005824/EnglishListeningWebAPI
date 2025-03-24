@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace MediaEncoder.Domain.Events
 {
-    public record EncodingItemFailEvent(Guid Id,string SourceSystem,string ErrorMessage):INotification
+    public record EncodingItemFailedEvent(Guid Id,string SourceSystem,string ErrorMessage):INotification
     {
     }
 }
