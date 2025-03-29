@@ -17,11 +17,11 @@ namespace Listening.Domain
             _listeningRepository = listeningRepository;
         }
 
-        public async Task<Category> AddCategory(string categoryName)
+        public async Task<Category> AddCategory(string categoryName,int showIndex,Uri coverUrl)
         {
            var category= await  _listeningRepository.FindCategoryByNameAsync(categoryName);
             if (category != null) return category;
-            Category newCategory=new Category(categoryName,1);
+            Category newCategory=new Category(categoryName, coverUrl, showIndex);
             return newCategory;
 
         }
@@ -34,7 +34,7 @@ namespace Listening.Domain
             }
             var album = await _listeningRepository.FindAlbumByNameAsync(albumName);
             if (album != null) return album;
-            Album newAlbum = new Album(albumName, 1, categoryId);
+            Album newAlbum = new Album(albumName, 1, category.CategoryName);
             return newAlbum;
 
         }
@@ -54,9 +54,9 @@ namespace Listening.Domain
         }
 
 
-        public async Task ChangeEpisodeShowIndex(string albumName, Guid episodeId,int index)
+        public async Task ChangeEpisodeShowIndex(string episodeName, Guid episodeId,int index)
         {
-            var episodes = await _listeningRepository.GetAllEpisodeByAlbumNameAsync(albumName);
+            var episodes = await _listeningRepository.GetAllEpisodeByAlbumNameAsync(episodeName);
 
             var hasEpisodeId=episodes.OrderBy(e=>e.Id).Select(e=>e.Id).ToArray();
 

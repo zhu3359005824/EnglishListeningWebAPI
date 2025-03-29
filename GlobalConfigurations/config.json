@@ -2,15 +2,15 @@
 
   "JWTSettings": {
     "key": "zhuhongzhi1234560010829@qq.com789456wqwqe",
-    "ExpireSeconds": 600,
+    "ExpireMinutes": 600,
     "Audience": "",
     "Issuer": ""
   },
   "IntergrationEventRabbitMQOption": {
     "ExchangeName": "ZHZ",
     "HostName": "localhost",
-    "UserName": "",
-    "Password": ""
+    "UserName": "guest",
+    "Password": "guest"
   },
   "MyRedisOption": {
     "ConnectionString": "127.0.0.1:6379,password=123456,abortConnect=false"

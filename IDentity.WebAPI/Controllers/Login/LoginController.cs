@@ -1,4 +1,4 @@
-
+using GlobalConfigurations;
 using IDentity.Domain;
 using IDentity.Domain.Entity;
 using IDentity.WebAPI.Event;
@@ -9,7 +9,7 @@ using ZHZ.EventBus;
 using ZHZ.Tools;
 using ZHZ.UnitOkWork;
 
-namespace IDentity.WebAPI.Controllers
+namespace IDentity.WebAPI.Controllers.Login
 {
     [ApiController]
     [Route("[controller]/[action]")]
@@ -31,20 +31,60 @@ namespace IDentity.WebAPI.Controllers
 
 
 
+        //[HttpPost]
+        //public async Task<ActionResult<MyResponseData>> LoginByPhoneNumberAndPwd(LoginRequest req)
+        //{
+        //    var user = await _identityRepository.FindByPhoneNumberAsync(req.phoneNumber);
+        //    if (user == null)
+        //    {
+        //        return BadRequest("用户名不存在");
+        //    }
+        //    string passwordHash = HashHelper.ComputeSha256Hash(req.password);
+
+        //    var (IsLogin, token) = await _identityDomainService.LoginByPhoneNumberAndPwdAsync(req.phoneNumber, passwordHash);
+
+        //    if (IsLogin.Succeeded)
+        //    {
+        //        MyResponseData responseData = new MyResponseData();
+
+        //        responseData.Data = new { token, UserName = user.UserName };
+        //        responseData.Code = 200;
+        //        responseData.Message = "登录成功";
+
+        //        return responseData;
+        //    }
+        //    else if (IsLogin.IsLockedOut)
+        //    {
+        //        return BadRequest("用户已锁定");
+        //    }
+        //    else
+        //    {
+        //        return BadRequest("手机号或密码错误");
+        //    }
+
+
+
+        //}
+
         [HttpPost]
-        public async Task<ActionResult<string>> LoginByPhoneNumberAndPwd(LoginRequest req )
+        public async Task<ActionResult<string>> LoginByPhoneNumberAndPwd(LoginRequest req)
         {
             var user = await _identityRepository.FindByPhoneNumberAsync(req.phoneNumber);
             if (user == null)
             {
                 return BadRequest("用户名不存在");
             }
-             string passwordHash= HashHelper.ComputeSha256Hash(req.password);
+            string passwordHash = HashHelper.ComputeSha256Hash(req.password);
 
             var (IsLogin, token) = await _identityDomainService.LoginByPhoneNumberAndPwdAsync(req.phoneNumber, passwordHash);
 
             if (IsLogin.Succeeded)
             {
+                
+
+                
+              
+
                 return token;
             }
             else if (IsLogin.IsLockedOut)
@@ -60,14 +100,12 @@ namespace IDentity.WebAPI.Controllers
 
         }
 
-
-       
         [UnitOfWork]
         [HttpGet]
         public async Task<ActionResult> InitTest()
         {
-           
-          if(  await _identityRepository.CreateRole("Admin") == IdentityResult.Success)
+
+            if (await _identityRepository.CreateRole("Admin") == IdentityResult.Success)
             {
                 MyUser user = new MyUser("zhz");
                 user.PhoneNumber = "11111111";
@@ -75,30 +113,37 @@ namespace IDentity.WebAPI.Controllers
 
                 var result = await _identityRepository.UserSetRole(user, "Admin");
 
-                
+
                 if (result.Succeeded)
                 {
                     //实现事件发布
-                    _eventBus.Publish("IdentityService.User.Created", new UserCreatedEvent(user.Id,user.UserName,user.PasswordHash,user.PhoneNumber));
+                    _eventBus.Publish("IdentityService.User.Created", new UserCreatedEvent(user.Id, user.UserName, user.PasswordHash, user.PhoneNumber));
                     return Ok("ok");
                 }
                 return BadRequest("错误");
 
             }
-          return BadRequest("cuowu");
+            return BadRequest("cuowu");
 
 
-           
 
-            
+
+
             //var hasUser=  await _identityRepository.FindByNameAsync(user.UserName);
             //if (hasUser != null)
             //{
             //    return Ok("ok");
             //}
-            
-          
-          
+
+
+
+        }
+
+
+        [HttpGet]
+        public ActionResult<string> Test()
+        {
+            return Ok("ok");
         }
     }
 }

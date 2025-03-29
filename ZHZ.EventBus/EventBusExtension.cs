@@ -56,7 +56,7 @@ namespace ZHZ.EventBus
 
             services.AddSingleton<IEventBus>(sp =>
             {
-                var options = sp.GetRequiredService<IOptionsSnapshot<IntergrationEventRabbitMQOption>>().Value;
+                var options = sp.GetRequiredService<IOptions<IntergrationEventRabbitMQOption>>().Value;
 
                 var factory = new ConnectionFactory()
                 {

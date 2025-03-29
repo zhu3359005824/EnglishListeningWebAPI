@@ -12,11 +12,13 @@ namespace Listening.Domain.Entity
     /// </summary>
     public class Category:AggregateRootEntity
     {
-        public Category( string categoryName, int showIndex) : base()
+        public Category( string categoryName,Uri? coverUrl, int showIndex) : base()
         {
             CategoryName = categoryName;
             ShowIndex = showIndex;
-           
+            CoverUrl = coverUrl;
+
+
         }
 
         public string CategoryName { get;set; }

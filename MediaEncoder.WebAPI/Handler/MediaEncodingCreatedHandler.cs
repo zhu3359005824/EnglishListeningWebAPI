@@ -39,10 +39,9 @@ public class MediaEncodingCreatedHandler : DynamicIntegrationEventHandler
         //把任务插入数据库，也可以看作是一种事件，不一定非要放到MQ中才叫事件
         //没有通过领域事件执行，因为如果一下子来很多任务，领域事件就会并发转码，而这种方式则会一个个的转码
         //直接用另一端传来的MediaId作为EncodingItem的主键
-        //var encodeItem = EncodingItem.Create(mediaId, fileName, mediaUrl, outputFormat, sourceSystem);
+        var encodeItem = EncodingItem.Create(mediaId, fileName, mediaUrl, outputFormat, sourceSystem);
 
-        //var encodeItem=new EncodingItem(sourceSystem,,fileName)
-        //dbContext.Add(encodeItem);
-        //await dbContext.SaveChangesAsync();
+        dbContext.Add(encodeItem);
+        await dbContext.SaveChangesAsync();
     }
 }

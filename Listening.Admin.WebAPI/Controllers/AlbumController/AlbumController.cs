@@ -11,11 +11,10 @@ using ZHZ.UnitOkWork;
 
 namespace Listening.Admin.WebAPI.Controllers.AlbumController
 {
-    [Route("api/[controller]/[action]")]
+    [Route("[controller]/[action]")]
     [ApiController]
     [Authorize(Roles = "Admin")]
-    [UnitOfWork(typeof(ListeningDbContext))]
-
+    
     public class AlbumController : ControllerBase
     {
         private readonly ListeningDbContext _dbCtx;
@@ -31,6 +30,7 @@ namespace Listening.Admin.WebAPI.Controllers.AlbumController
             _memoryCache = memoryCache;
         }
 
+        [UnitOfWork(typeof(ListeningDbContext))]
         [HttpPost]
         public async Task<ActionResult> AddAlbum(AddAlbumRequest request)
         {
@@ -39,28 +39,13 @@ namespace Listening.Admin.WebAPI.Controllers.AlbumController
             {
                 return BadRequest($"Catrgory_{request.CategoryName}不存在");
             }
-            Album album=new Album(request.AlbumName,request.ShowIndex,category!.Id);
+            Album album=new Album(request.AlbumName,request.ShowIndex,category!.CategoryName);
 
             _dbCtx.Albums.Add(album);
 
             return Ok("添加成功");
 
         }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
         [HttpGet]

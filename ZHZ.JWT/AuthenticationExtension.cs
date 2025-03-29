@@ -20,8 +20,8 @@ namespace ZHZ.JWT
                 x.TokenValidationParameters = new()
                 {
 
-                    ValidateIssuer = true,
-                    ValidateAudience = true,
+                    ValidateIssuer = false,
+                    ValidateAudience = false,
                     ValidateLifetime = true,
                     ValidateIssuerSigningKey = true,
                     ValidIssuer = jWTSettings.Issuer,

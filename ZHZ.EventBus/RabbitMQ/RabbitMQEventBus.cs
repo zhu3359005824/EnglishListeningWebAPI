@@ -53,20 +53,24 @@ namespace ZHZ.EventBus.RabbitMQ
           
             QueueName = queueName;
             _subscriptionManager.OnEventRemoved += SubsManager_OnEventRemoved;
-           
-            _channel = Start();
             _connectionFactory = connectionFactory;
+            _channel = Start();
+            
         }
 
         public IChannel Start()
         {
             _connection = _connectionFactory.CreateConnectionAsync().Result;
-
+            if (_connection == null)
+                throw new InvalidOperationException("Failed to create RabbitMQ connection.");
 
             var channel = _connection.CreateChannelAsync().Result;
-            //匹配交换机
+            if (channel == null)
+                throw new InvalidOperationException("Failed to create RabbitMQ channel.");
+
+            // 匹配交换机
             channel.ExchangeDeclareAsync(ExchangeName, ExchangeType.Direct);
-            //匹配队列
+            // 匹配队列
             channel.QueueDeclareAsync(QueueName, true, false, false, null);
 
             channel.CallbackExceptionAsync += (sender, ea) =>
@@ -76,8 +80,6 @@ namespace ZHZ.EventBus.RabbitMQ
             };
 
             return channel;
-
-
         }
 
         /// <summary>

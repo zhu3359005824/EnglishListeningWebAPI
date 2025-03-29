@@ -27,7 +27,7 @@ public class EncodingEpisodeHelper
     /// 增加待转码的任务的详细信息
     /// </summary>
     /// <param name="albumId"></param>
-    /// <param name="episode"></param>
+    /// <param name="episode"></param> 
     /// <returns></returns>
     public async Task AddEncodingEpisodeAsync(string episodeName, EncodingEpisodeInfo episode)
     {

@@ -66,7 +66,7 @@ namespace MediaEncoder.WebAPI
             {
                 //获取所有处于Ready状态的任务
                 //ToListAsync()可以避免在循环中再用DbContext去查询数据导致的“There is already an open DataReader associated with this Connection which must be closed first.”
-                var readyItems = await _mediaEncoderRepository.FindAsync(ItemStatus.Prepared);
+                var readyItems = await _mediaEncoderRepository.FindAsync(ItemStatus.Ready);
                 foreach (EncodingItem readyItem in readyItems)
                 {
                     try
@@ -194,7 +194,7 @@ namespace MediaEncoder.WebAPI
             using var redLock = await redlockFactory.CreateLockAsync(lockKey, expiry);
             if (!redLock.IsAcquired)
             {
-                Debug.Fail($"获取{lockKey}锁失败，已被抢走");
+                Console.WriteLine($"获取{lockKey}锁失败，已被抢走");
                 //获得锁失败，锁已经被别人抢走了，说明这个任务被别的实例处理了（有可能有服务器集群来分担转码压力）
                 return;//再去抢下一个
             }
@@ -212,20 +212,20 @@ namespace MediaEncoder.WebAPI
             FileInfo destFile = BuildDestFileInfo(encItem);
             try
             {
-                Debug.WriteLine($"下载Id={id}成功，开始计算Hash值");
+                Console.WriteLine($"下载Id={id}成功，开始计算Hash值");
                 long fileSize = srcFile.Length;
                 string srcFileHash = ComputeSHA256Hash(srcFile);
                 //如果之前存在过和这个文件大小、hash一样的文件，就认为重复了
                 EncodingItem? prevInstance = await _mediaEncoderRepository.FindOneFinishAsync(srcFileHash, fileSize);
                 if (prevInstance != null)
                 {
-                    Debug.WriteLine($"检查Id={id}Hash值成功，发现已经存在相同大小和Hash值的旧任务Id={prevInstance.Id}，返回！");
+                    Console.WriteLine($"检查Id={id}Hash值成功，发现已经存在相同大小和Hash值的旧任务Id={prevInstance.Id}，返回！");
                     _eventBus.Publish("MediaEncoding.Duplicated", new { encItem.Id, encItem.SourceSystem, OutputUrl = prevInstance.OutputUrl });
                     encItem.Complete(prevInstance.OutputUrl!);
                     return;
                 }
                 //开始转码
-                Debug.WriteLine($"Id={id}开始转码，源路径:{srcFile},目标路径:{destFile}");
+                Console.WriteLine($"Id={id}开始转码，源路径:{srcFile},目标路径:{destFile}");
                 string outputFormat = encItem.OutType;
                 var encodingOK = await EncodeAsync(srcFile, destFile, outputFormat, ct); ;
                 if (!encodingOK)
@@ -234,11 +234,11 @@ namespace MediaEncoder.WebAPI
                     return;
                 }
                 //开始上传
-                Debug.WriteLine($"Id={id}转码成功，开始准备上传");
+                Console.WriteLine($"Id={id}转码成功，开始准备上传");
                 
                 encItem.Complete(destUrl);
                 encItem.ChangeFileMeta(fileSize, srcFileHash);
-              Debug.WriteLine($"Id={id}转码结果上传成功");
+                Console.WriteLine($"Id={id}转码结果上传成功");
                 //发出集成事件和领域事件
             }
             finally

@@ -12,11 +12,12 @@ namespace Listening.Domain.Entity
     /// </summary>
     public class Album:AggregateRootEntity
     {
-        public Album(string albumName, int showIndex, Guid categoryId) : base()
+        public Album(string albumName, int showIndex, string categoryName) : base()
         {
             AlbumName = albumName;
             ShowIndex = showIndex;
-            CategoryId = categoryId;
+           
+            CategoryName = categoryName;
         }
 
         public string AlbumName { get; set; }
@@ -24,6 +25,9 @@ namespace Listening.Domain.Entity
         public int ShowIndex { get; private set; }
 
         public Guid CategoryId { get; set; }
+        public string CategoryName { get; set; }
+
+
 
 
 

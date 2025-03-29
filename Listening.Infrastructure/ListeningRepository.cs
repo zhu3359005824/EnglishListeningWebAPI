@@ -65,8 +65,8 @@ namespace Listening.Infrastructure
 
         public async Task<Category?> FindCategoryByNameAsync(string categoryName)
         {
-            var category=  _context.Categories.Where(x=>x.CategoryName==categoryName).ToList();
-            return category[0];
+            var category=  await _context.Categories.FirstOrDefaultAsync(x=>x.CategoryName==categoryName);
+            return category;
         }
 
         public async Task<Episode?> FindEpisodeByIdAsync(Guid id)

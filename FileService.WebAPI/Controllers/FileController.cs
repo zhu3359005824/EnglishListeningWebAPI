@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace FileService.WebAPI.Controllers
 {
-    [Route("api/[controller]/[action]")]
+    [Route("[controller]/[action]")]
     [ApiController]
     public class FileController : ControllerBase
     {
@@ -22,7 +22,7 @@ namespace FileService.WebAPI.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> UploadItems([FromForm] UploadRequest uploadRequest)
+        public async Task<ActionResult<Uri>> UploadItems([FromForm] UploadRequest uploadRequest)
         {
             var file=uploadRequest.File;
             string fileName=file.FileName;
@@ -35,7 +35,7 @@ namespace FileService.WebAPI.Controllers
 
             
 
-            return Ok($"成功");
+            return uploadItem.SourceUrl;
             
         }
     }

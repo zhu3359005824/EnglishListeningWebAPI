@@ -42,25 +42,26 @@ namespace MediaEncoder.Domain
 
        
 
-        public EncodingItem(string sourceSystem, long fileByteSize, string fileName, string fileSHA256Hash, Uri? sourceUrl, Uri? outputUrl, string outType, ItemStatus status, string logText):base()
+    
+        public static EncodingItem Create(Guid id, string name, Uri sourceUrl, string outputType, string sourceSystem)
         {
-            SourceSystem = sourceSystem;
-            FileByteSize = fileByteSize;
-            FileName = fileName;
-            FileSHA256Hash = fileSHA256Hash;
-            SourceUrl = sourceUrl;
-            OutputUrl = outputUrl;
-            OutType = outType;
-            Status = status;
-            LogText = logText;
-
-
-            this.AddDomainEvent(new EncodingItemCreatedEvent(this.Id, SourceSystem, OutputUrl));
+            EncodingItem item = new EncodingItem()
+            {
+                Id = id,
+                CreateTime = DateTime.Now,
+                FileName = name,
+                OutType = outputType,
+                SourceUrl = sourceUrl,
+                Status = ItemStatus.Ready,
+                SourceSystem = sourceSystem,
+            };
+            item.AddDomainEvent(new EncodingItemCreatedEvent(item));
+            return item;
         }
 
         public void Start()
         {
-            this.Status=ItemStatus.Running;
+            this.Status=ItemStatus.Started;
             this.LogText = "正在进行转码";
             //添加事件
             AddDomainEvent(new EncodingItemStartedEvent(this.Id, SourceSystem));
@@ -72,7 +73,7 @@ namespace MediaEncoder.Domain
         public void Complete(Uri outputUrl)
         {
             this.OutputUrl=outputUrl;
-            this.Status=ItemStatus.Finish;
+            this.Status=ItemStatus.Completed;
             this.LogText = "转码成功";
 
             //添加事件

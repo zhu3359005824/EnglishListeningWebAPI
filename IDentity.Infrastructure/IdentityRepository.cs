@@ -127,6 +127,38 @@ namespace IDentity.Infrastructure
            return   _roleManager.CreateAsync(role);
         }
 
-       
+
+        private static IdentityResult ErrorResult(string msg)
+        {
+            IdentityError idError = new IdentityError { Description = msg };
+            return IdentityResult.Failed(idError);
+        }
+
+        public async Task<(IdentityResult, MyUser?, string? password)> AddAdminUserAsync(string userName, string phoneNum)
+        {
+            if (await FindByNameAsync(userName) != null)
+            {
+                return (ErrorResult($"已经存在用户名{userName}"), null, null);
+            }
+            if (await FindByPhoneNumberAsync(phoneNum) != null)
+            {
+                return (ErrorResult($"已经存在手机号{phoneNum}"), null, null);
+            }
+            MyUser user = new MyUser(userName);
+            user.PhoneNumber = phoneNum;
+            user.PhoneNumberConfirmed = true;
+            string password = "1233456";
+            var result = await AddUserAsync(user, password);
+            if (!result.Succeeded)
+            {
+                return (result, null, null);
+            }
+            result = await UserSetRole (user, "Admin");
+            if (!result.Succeeded)
+            {
+                return (result, null, null);
+            }
+            return (IdentityResult.Success, user, password);
+        }
     }
 }

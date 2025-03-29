@@ -11,10 +11,10 @@ namespace Listening.Admin.WebAPI.Handler
 {
     //收听转码服务发出的集成事件
     //把状态通过SignalR推送给客户端，从而显示“转码进度”
-    [EventName("MediaEncoding.Prepared")]
-    [EventName("MediaEncoding.Running")]
-    [EventName("MediaEncoding.Finish")]
+    [EventName("MediaEncoding.Started")]
     [EventName("MediaEncoding.Failed")]
+    [EventName("MediaEncoding.Duplicated")]
+    [EventName("MediaEncoding.Completed")]
     public class EncodingStatusChangeIntergrationHandler : DynamicIntegrationEventHandler
     {
 

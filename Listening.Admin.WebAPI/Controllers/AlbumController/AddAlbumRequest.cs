@@ -4,13 +4,21 @@ using Listening.Admin.WebAPI.Controllers.AlbumController;
 using Listening.Domain.Entity;
 using Listening.Infrastructure;
 using Microsoft.EntityFrameworkCore;
+using System.Text.Json.Serialization;
 
 namespace Listening.Admin.WebAPI.Controllers.AlbumController
 {
-    public record AddAlbumRequest(string AlbumName,int ShowIndex ,string CategoryName):IValidationData;
+   
+    public record AddAlbumRequest(string AlbumName, string CategoryName,int ShowIndex ) 
+    {
+       
+        
+    }
 
     //把校验规则写到单独的文件，也是DDD的一种原则
-   
+
+    
+
 }
 public class AddAlbumRequestValidator : AbstractValidator<AddAlbumRequest>
 {

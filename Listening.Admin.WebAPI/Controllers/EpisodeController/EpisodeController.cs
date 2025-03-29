@@ -13,10 +13,10 @@ using ZHZ.UnitOkWork;
 
 namespace Listening.Admin.WebAPI.Controllers.EpisodeController
 {
-    [Route("api/[controller]/[action]")]
+    [Route("[controller]/[action]")]
     [ApiController]
     [Authorize(Roles = "Admin")]
-    [UnitOfWork(typeof(ListeningDbContext))]
+   
     public class EpisodeController : ControllerBase
     {
         private readonly ListeningDbContext _dbCtx;
@@ -38,7 +38,7 @@ namespace Listening.Admin.WebAPI.Controllers.EpisodeController
         }
 
 
-
+        [UnitOfWork(typeof(ListeningDbContext))]
         [HttpPost]
         public async Task<ActionResult<Guid>> AddEpisode(AddEpisodeRequest request)
         {
@@ -49,7 +49,7 @@ namespace Listening.Admin.WebAPI.Controllers.EpisodeController
                 return BadRequest($"Album_{request.albumName}不存在");
             }
 
-            if(request.sentenceType.Equals("m4a",StringComparison.OrdinalIgnoreCase))
+            if(request.AudioUrl.ToString().EndsWith("m4a",StringComparison.OrdinalIgnoreCase))
             {
                 Episode episode = new Episode(album.Id, request.sentenceContext, request.sentenceType,
                 request.episodeName);

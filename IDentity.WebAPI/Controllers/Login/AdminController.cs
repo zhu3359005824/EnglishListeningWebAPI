@@ -2,14 +2,14 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
-namespace IDentity.WebAPI.Controllers
+namespace IDentity.WebAPI.Controllers.Login
 {
-    [Route("api/[controller]/[action]")]
+    [Route("[controller]/[action]")]
     [ApiController]
     [Authorize]
-   
+
     public class AdminController : ControllerBase
     {
-        
+
     }
 }

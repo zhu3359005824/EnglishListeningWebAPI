@@ -218,7 +218,7 @@ namespace GlobalConfigurations
             {
                 //更好的在Program.cs中用绑定方式读取配置的方法：https://github.com/dotnet/aspnetcore/issues/21491
                 //不过比较麻烦。
-                string[] urls = {""};
+                string[] urls = { "http://localhost:5173/" };
                 options.AddDefaultPolicy(builder => builder.WithOrigins(urls)
                         .AllowAnyMethod().AllowAnyHeader().AllowCredentials());
             }

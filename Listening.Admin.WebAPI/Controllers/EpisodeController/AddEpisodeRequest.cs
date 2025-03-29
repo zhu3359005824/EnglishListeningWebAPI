@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Listening.Admin.WebAPI.Controllers.EpisodeController
 {
-    public record AddEpisodeRequest(string albumName,string sentenceContext,string sentenceType,string episodeName):IValidationData
+    public record AddEpisodeRequest(string albumName,string sentenceContext,string sentenceType,string episodeName, Uri AudioUrl)
     {
     }
 }

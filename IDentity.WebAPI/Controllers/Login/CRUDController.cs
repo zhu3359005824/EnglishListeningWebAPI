@@ -4,9 +4,9 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
-namespace IDentity.WebAPI.Controllers
+namespace IDentity.WebAPI.Controllers.Login
 {
-    [Route("api/[controller]/[action]")]
+    [Route("[controller]/[action]")]
     [ApiController]
     public class CRUDController : ControllerBase
     {
@@ -27,7 +27,7 @@ namespace IDentity.WebAPI.Controllers
         //    if (hasUser != null) return BadRequest($"用户名{username }已存在");
 
         //    _identityRepository.AddUserAsync(user,password);
-            
+
 
         //}
     }

@@ -2,13 +2,13 @@
 
 namespace Listening.Admin.WebAPI.Controllers.AlbumController
 {
-    public record AlbumModel(Guid id, string name, Guid categoryId)
+    public record AlbumModel(Guid id, string albumname, string categoryName,DateTime? createTime)
     {
         public static AlbumModel? Create(Album a)
         {
             if (a == null) throw new ArgumentNullException("Album不存在");
 
-            return new AlbumModel(a.Id, a.AlbumName, a.CategoryId);
+            return new AlbumModel(a.Id, a.AlbumName, a.CategoryName,a.CreateTime);
         }
 
 

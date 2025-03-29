@@ -36,8 +36,6 @@ namespace IDentity.Domain
      
 
         Task<IList<string>> GetRolesAsync(MyUser user);
-
-
-       
+       Task<(IdentityResult, MyUser?, string? password)> AddAdminUserAsync(string userName, string phoneNum);
     }
 }
