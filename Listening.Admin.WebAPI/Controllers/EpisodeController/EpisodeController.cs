@@ -87,6 +87,19 @@ namespace Listening.Admin.WebAPI.Controllers.EpisodeController
 
 
 
+        [AllowAnonymous]
+        [HttpGet]
+        public void TestEvent()
+        {
+            _eventBus.Publish("MediaEncoding.Created",new {
+                EpisodeName ="test",
+                    OutputType = "m4a",
+                    SourceSystem = "Listening"
+            });
+        }
+
+
+
 
 
 

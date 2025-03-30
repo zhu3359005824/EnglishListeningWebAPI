@@ -17,7 +17,7 @@ namespace Listening.Main.WebAPI
 
             builder.ConfigureExtensionService(new InitializerOptions()
             {
-                EventBusQueueName = "1",
+                EventBusQueueName = "Listen.Main",
                 LogFilePath = "E:/Identity.log"
             });
 

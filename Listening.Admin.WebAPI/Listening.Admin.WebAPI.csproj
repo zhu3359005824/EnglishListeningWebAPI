@@ -13,12 +13,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\GlobalConfigurations\GlobalConfigurations.csproj" />
     <ProjectReference Include="..\Listening.Domain\Listening.Domain.csproj" />
     <ProjectReference Include="..\Listening.Infrastructure\Listening.Infrastructure.csproj" />
-    <ProjectReference Include="..\ZHZ.Infrastructure\ZHZ.Infrastructure.csproj" />
-    <ProjectReference Include="..\ZHZ.JWT\ZHZ.JWT.csproj" />
-    <ProjectReference Include="..\ZHZ.UnitOkWork\ZHZ.UnitOkWork.csproj" />
   </ItemGroup>
 
 </Project>

@@ -9,6 +9,7 @@ namespace Listening.Admin.WebAPI
         {
             var builder = WebApplication.CreateBuilder(args);
 
+            
             // Add services to the container.
 
             builder.Services.AddControllers();
@@ -19,17 +20,17 @@ namespace Listening.Admin.WebAPI
 
             builder.Services.AddSignalR();
             builder.Services.AddScoped<EncodingEpisodeHelper>();
+
+
+
+
+
+
             builder.ConfigureExtensionService(new InitializerOptions()
             {
                 EventBusQueueName = "Listening.Admin",
                 LogFilePath = "e:/temp/Listening.Admin.log"
             });
-
-
-
-
-
-
 
 
             var app = builder.Build();

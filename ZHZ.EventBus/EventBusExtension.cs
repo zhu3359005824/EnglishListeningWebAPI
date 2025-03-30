@@ -18,20 +18,35 @@ namespace ZHZ.EventBus
         /// <returns></returns>
         public static IServiceCollection AddEventBus(this IServiceCollection services, string queueName, IEnumerable<Assembly> assemblies)
         {
-            List<Type> eventHandlers = new List<Type>();
+            var eventHandlers = new List<Type>();
 
-            foreach (Assembly assembly in assemblies)
+            foreach (var assembly in assemblies)
             {
-                //用GetTypes()，这样非public类也能注册
-                var types = assembly.GetTypes().Where(t => t.IsAbstract == false && t.IsAssignableTo(typeof(IIntergrationEventHandler)));
+                try
+                {
+                    // 使用GetExportedTypes避免加载内部类型，添加异常处理
+                    var types = assembly.GetExportedTypes()
+                        .Where(t =>
+                            !t.IsAbstract &&
+                            !t.IsInterface &&
+                            typeof(IIntergrationEventHandler).IsAssignableFrom(t)
+                        ).ToList();
 
-                eventHandlers.AddRange(types);
+                    eventHandlers.AddRange(types);
+                }
+                catch (ReflectionTypeLoadException ex)  // 处理类型加载失败的情况
+                {
+                    var loadedTypes = ex.Types.Where(t => t != null);
+                    var validTypes = loadedTypes.Where(t =>
+                        !t.IsAbstract &&
+                        !t.IsInterface &&
+                        typeof(IIntergrationEventHandler).IsAssignableFrom(t)
+                    );
+                    eventHandlers.AddRange(validTypes);
+                }
             }
+
             return AddEventBus(services, queueName, eventHandlers);
-
-
-
-
         }
 
         /// <summary>

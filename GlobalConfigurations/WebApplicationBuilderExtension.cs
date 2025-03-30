@@ -28,7 +28,7 @@ namespace GlobalConfigurations
     {
         public static void ConfigureExtensionService(this WebApplicationBuilder builder, InitializerOptions initializerOptions)
         {
-            builder.Configuration.AddEnvironmentVariables();
+           // builder.Configuration.AddEnvironmentVariables();
             //依赖注入容器
             IServiceCollection service = builder.Services;
             IConfiguration configuration = builder.Configuration;
