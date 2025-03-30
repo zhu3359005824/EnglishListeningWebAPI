@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace ZHZ.EventBus
+﻿namespace ZHZ.EventBus
 {/// <summary>
 /// 订阅事件管理器,
 ///
@@ -14,17 +8,17 @@ namespace ZHZ.EventBus
         /// <summary>
         /// 事件,监听该事件者Handler
         /// </summary>
-        private readonly Dictionary<string,List<Type>> _handlers = new Dictionary<string,List<Type>>();
+        private readonly Dictionary<string, List<Type>> _handlers = new Dictionary<string, List<Type>>();
 
 
         public event EventHandler<string> OnEventRemoved;
 
 
 
-        public bool IsEmpty=> _handlers.Keys.Any();
+        public bool IsEmpty => _handlers.Keys.Any();
 
 
-        public void Clear()=>_handlers.Clear();
+        public void Clear() => _handlers.Clear();
 
 
         /// <summary>
@@ -33,7 +27,7 @@ namespace ZHZ.EventBus
         /// <param name="eventName"></param>
         /// <param name="eventHandlerType"></param>
         /// <exception cref="ArgumentException"></exception>
-        public void AddSubscription(string eventName,Type eventHandlerType)
+        public void AddSubscription(string eventName, Type eventHandlerType)
         {
             if (!HasSubscriptionsByEvent(eventName))
             {
@@ -57,7 +51,7 @@ namespace ZHZ.EventBus
             {
                 _handlers.Remove(eventName);
             }
-            OnEventRemoved?.Invoke(this,eventName);
+            OnEventRemoved?.Invoke(this, eventName);
         }
         /// <summary>
         /// 获取eventName的所有Handler
@@ -71,7 +65,7 @@ namespace ZHZ.EventBus
         /// </summary>
         /// <param name="eventName"></param>
         /// <returns></returns>
-        public bool HasSubscriptionsByEvent(string eventName)=>_handlers.ContainsKey(eventName);
+        public bool HasSubscriptionsByEvent(string eventName) => _handlers.ContainsKey(eventName);
 
     }
 }

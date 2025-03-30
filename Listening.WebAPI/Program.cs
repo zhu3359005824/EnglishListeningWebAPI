@@ -1,7 +1,4 @@
 using GlobalConfigurations;
-using Listening.Domain;
-using Listening.Infrastructure;
-using Microsoft.EntityFrameworkCore;
 
 namespace Listening.Main.WebAPI
 {
@@ -37,7 +34,7 @@ namespace Listening.Main.WebAPI
                 app.UseSwaggerUI();
             }
 
-           app.UseZhzDefault();
+            app.UseZhzDefault();
 
 
             app.MapControllers();

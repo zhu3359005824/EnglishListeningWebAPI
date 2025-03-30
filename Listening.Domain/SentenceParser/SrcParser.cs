@@ -1,22 +1,18 @@
 ﻿using Listening.Domain.ValueObject;
 using SubtitlesParser.Classes.Parsers;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace Listening.Domain.SentenceParser
 {
-    
+
     // 导包SubtitlesParser.Classes.Parsers;
- 
+
     public class SrcParser : ISentenceParser
     {
         public bool CanParse(string sentenceType)
         {
-           return sentenceType.Equals("src",StringComparison.OrdinalIgnoreCase)||
-                sentenceType.Equals("vrc",StringComparison.OrdinalIgnoreCase);
+            return sentenceType.Equals("src", StringComparison.OrdinalIgnoreCase) ||
+                 sentenceType.Equals("vrc", StringComparison.OrdinalIgnoreCase);
         }
 
         public IEnumerable<Sentence> Parse(string sentenceContext)

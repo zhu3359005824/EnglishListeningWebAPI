@@ -1,17 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Text.Json;
-using System.Threading.Tasks;
+﻿using System.Text.Json;
 
 namespace ZHZ.EventBus.Handler
 {
-    public abstract   class DynamicIntegrationEventHandler : IIntergrationEventHandler
+    public abstract class DynamicIntegrationEventHandler : IIntergrationEventHandler
     {
         public Task Handle(string eventName, string eventData)
         {
-           dynamic c=JsonSerializer.Deserialize<dynamic>(eventData);
+            dynamic c = JsonSerializer.Deserialize<dynamic>(eventData);
 
             return HandleDynamic(eventName, c);
         }

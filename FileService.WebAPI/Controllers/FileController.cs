@@ -1,6 +1,5 @@
 ﻿using FileService.Domain;
 using FileService.Infrastructure;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FileService.WebAPI.Controllers
@@ -24,19 +23,19 @@ namespace FileService.WebAPI.Controllers
         [HttpPost]
         public async Task<ActionResult<Uri>> UploadItems([FromForm] UploadRequest uploadRequest)
         {
-            var file=uploadRequest.File;
-            string fileName=file.FileName;
-            using Stream stream=file.OpenReadStream();
+            var file = uploadRequest.File;
+            string fileName = file.FileName;
+            using Stream stream = file.OpenReadStream();
 
-            var uploadItem=await _fileService.UploadItemAsync(stream, fileName);
-            
-          await  _dbContext.UploadItems.AddAsync(uploadItem);
-          await  _dbContext.SaveChangesAsync();
+            var uploadItem = await _fileService.UploadItemAsync(stream, fileName);
 
-            
+            await _dbContext.UploadItems.AddAsync(uploadItem);
+            await _dbContext.SaveChangesAsync();
+
+
 
             return uploadItem.SourceUrl;
-            
+
         }
     }
 }

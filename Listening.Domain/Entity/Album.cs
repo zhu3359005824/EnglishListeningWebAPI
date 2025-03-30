@@ -1,22 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using ZHZ.Entity;
+﻿using ZHZ.Entity;
 
 namespace Listening.Domain.Entity
 {
     /// <summary>
     /// 听力的列表,如4级级听力中包含2022年,2023年,2024年的听力
     /// </summary>
-    public class Album:AggregateRootEntity
+    public class Album : AggregateRootEntity
     {
         public Album(string albumName, int showIndex, string categoryName) : base()
         {
             AlbumName = albumName;
             ShowIndex = showIndex;
-           
+
             CategoryName = categoryName;
         }
 
@@ -43,7 +38,7 @@ namespace Listening.Domain.Entity
             return this;
         }
 
-       
+
 
 
 

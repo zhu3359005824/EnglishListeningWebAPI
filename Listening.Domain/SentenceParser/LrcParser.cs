@@ -1,17 +1,12 @@
 ﻿using Listening.Domain.ValueObject;
 
 using Opportunity.LrcParser;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Listening.Domain.SentenceParser
 {
-    
+
     // 导包Opportunity.LrcParser
-   
+
     internal class LrcParser : ISentenceParser
     {
         public bool CanParse(string sentenceType)
@@ -29,9 +24,9 @@ namespace Listening.Domain.SentenceParser
             lyrics.Lyrics.PreApplyOffset();//应用上[offset:500]这样的偏移
             return FromLrc(lyrics.Lyrics);
         }
-       
 
-       
+
+
 
         private static Sentence[] FromLrc(Lyrics<Line> lyrics)
         {

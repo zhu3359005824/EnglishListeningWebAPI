@@ -11,6 +11,6 @@ public class CategoryUpdateRequestValidator : AbstractValidator<CategoryUpdateRe
     public CategoryUpdateRequestValidator()
     {
         RuleFor(x => x.Name).NotEmpty();
-        
+
     }
 }

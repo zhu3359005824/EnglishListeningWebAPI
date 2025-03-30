@@ -1,22 +1,17 @@
 ﻿using MediaEncoder.Domain.Events;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using ZHZ.Entity;
 
 namespace MediaEncoder.Domain
 {
-    public class EncodingItem:AggregateRootEntity
+    public class EncodingItem : AggregateRootEntity
     {
-        
+
 
         /// <summary>
         /// 哪个服务的任务
         /// </summary>
-        public string SourceSystem {  get; private set; }   
-        
+        public string SourceSystem { get; private set; }
+
         public long FileByteSize { get; private set; }
 
         public string FileName { get; private set; }
@@ -40,9 +35,9 @@ namespace MediaEncoder.Domain
 
         private EncodingItem() { }
 
-       
 
-    
+
+
         public static EncodingItem Create(Guid id, string name, Uri sourceUrl, string outputType, string sourceSystem)
         {
             EncodingItem item = new EncodingItem()
@@ -61,7 +56,7 @@ namespace MediaEncoder.Domain
 
         public void Start()
         {
-            this.Status=ItemStatus.Started;
+            this.Status = ItemStatus.Started;
             this.LogText = "正在进行转码";
             //添加事件
             AddDomainEvent(new EncodingItemStartedEvent(this.Id, SourceSystem));
@@ -72,18 +67,18 @@ namespace MediaEncoder.Domain
 
         public void Complete(Uri outputUrl)
         {
-            this.OutputUrl=outputUrl;
-            this.Status=ItemStatus.Completed;
+            this.OutputUrl = outputUrl;
+            this.Status = ItemStatus.Completed;
             this.LogText = "转码成功";
 
             //添加事件
-            AddDomainEvent(new EncodingItemFinishEvent(this.Id,SourceSystem,OutputUrl));
+            AddDomainEvent(new EncodingItemFinishEvent(this.Id, SourceSystem, OutputUrl));
         }
 
         public void Fail(string logText)
         {
-            this.Status=ItemStatus.Failed;
-            this.LogText=logText;
+            this.Status = ItemStatus.Failed;
+            this.LogText = logText;
             //添加事件
             AddDomainEvent(new EncodingItemFailedEvent(this.Id, SourceSystem, logText));
         }

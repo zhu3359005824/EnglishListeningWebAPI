@@ -35,7 +35,8 @@ public class EncodingEpisodeHelper
         var db = redisConn.GetDatabase();
         await db.StringSetAsync(redisKeyForEpisode, episode.ToJsonString());//保存转码任务详细信息，供完成后插入数据库
         string keyForEncodingEpisodeIdsOfAlbum = GetKeyForEncodingEpisodeIdsOfAlbum(episode.AlbumName);
-        await db.SetAddAsync(keyForEncodingEpisodeIdsOfAlbum, episodeName.ToString());//保存这个album下所有待转码的episodeId
+        bool result = await db.SetAddAsync(keyForEncodingEpisodeIdsOfAlbum, episodeName.ToString());//保存这个album下所有待转码的episodeId
+        Console.WriteLine(result);
     }
 
     /// <summary>
@@ -76,7 +77,7 @@ public class EncodingEpisodeHelper
     /// <returns></returns>
     public async Task UpdateEpisodeStatusAsync(string episodeName, string status)
     {
-        string redisKeyForEpisode = GetStatusKeyForEpisode( episodeName);
+        string redisKeyForEpisode = GetStatusKeyForEpisode(episodeName);
         var db = redisConn.GetDatabase();
         string json = await db.StringGetAsync(redisKeyForEpisode);
         EncodingEpisodeInfo episode = json.ParseJson<EncodingEpisodeInfo>()!;

@@ -1,17 +1,3 @@
-
-using FluentValidation.AspNetCore;
-using FluentValidation;
-using Listening.Domain;
-using Listening.Infrastructure;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
-using Microsoft.OpenApi.Models;
-using System.Text;
-using ZHZ.JWT;
-using Listening.Admin.WebAPI.Controllers.CategoryController;
-using Listening.Admin.WebAPI.Controllers.EpisodeController;
-using Listening.Admin.WebAPI.Controllers.AlbumController;
 using GlobalConfigurations;
 using Listening.Admin.WebAPI.Hubs;
 
@@ -35,15 +21,15 @@ namespace Listening.Admin.WebAPI
             builder.Services.AddScoped<EncodingEpisodeHelper>();
             builder.ConfigureExtensionService(new InitializerOptions()
             {
-                EventBusQueueName = "1",
-                LogFilePath = "E:/Identity.log"
+                EventBusQueueName = "Listening.Admin",
+                LogFilePath = "e:/temp/Listening.Admin.log"
             });
 
 
 
 
 
-         
+
 
 
             var app = builder.Build();
@@ -56,7 +42,7 @@ namespace Listening.Admin.WebAPI
             }
             app.MapHub<EpisodeEncodingStatusHub>("/Hubs/EpisodeEncodingStatusHub");
 
-           app.UseZhzDefault();
+            app.UseZhzDefault();
 
 
             app.MapControllers();

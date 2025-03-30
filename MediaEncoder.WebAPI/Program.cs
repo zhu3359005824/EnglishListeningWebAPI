@@ -11,8 +11,8 @@ namespace MediaEncoder.WebAPI
 
             builder.ConfigureExtensionService(new InitializerOptions()
             {
-                EventBusQueueName="MediaEncoder",
-                LogFilePath="e:/MediaEncoderLog"
+                EventBusQueueName = "MediaEncoder.WebAPI",
+                LogFilePath = "e:/temp/MediaEncoder.log"
             });
 
             // Add services to the container.
@@ -31,7 +31,7 @@ namespace MediaEncoder.WebAPI
                 app.UseSwaggerUI();
             }
 
-           app.UseZhzDefault();
+            app.UseZhzDefault();
 
 
             app.MapControllers();

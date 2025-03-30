@@ -2,7 +2,6 @@
 using GlobalConfigurations.注册所有项目中的服务;
 using IDentity.Domain;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
 using ZHZ.JWT;
 
 namespace IDentity.Infrastructure
@@ -14,7 +13,7 @@ namespace IDentity.Infrastructure
             services.AddScoped<IdentityDomainService>();
             services.AddScoped<IIdentityRepository, IdentityRepository>();
             services.AddScoped<IJwtTokenService, JwtTokenService>();
-           
+
         }
     }
 }

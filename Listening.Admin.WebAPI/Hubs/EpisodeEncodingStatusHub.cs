@@ -2,7 +2,7 @@
 
 namespace Listening.Admin.WebAPI.Hubs
 {
-    public class EpisodeEncodingStatusHub :Hub
+    public class EpisodeEncodingStatusHub : Hub
     {
     }
 }

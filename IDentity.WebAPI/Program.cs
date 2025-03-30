@@ -1,21 +1,7 @@
-
-using IDentity.Domain;
+using GlobalConfigurations;
 using IDentity.Domain.Entity;
 using IDentity.Infrastructure;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
-using System.Text;
-using ZHZ.JWT;
-
-using FluentValidation.AspNetCore;
-using FluentValidation;
-using IDentity.WebAPI.Controllers;
-using ZHZ.UnitOkWork;
-using GlobalConfigurations;
 
 namespace IDentity.WebAPI
 {
@@ -27,8 +13,8 @@ namespace IDentity.WebAPI
 
             builder.ConfigureExtensionService(new InitializerOptions()
             {
-                EventBusQueueName="1",
-                LogFilePath="E:/Identity.log"
+                EventBusQueueName = "1",
+                LogFilePath = "E:/Identity.log"
             });
 
             // Add services to the container.
@@ -43,7 +29,7 @@ namespace IDentity.WebAPI
                 //c.AddAuthenticationHeader();
             });
 
-            
+
 
 
             //builder.Services.AddFluentValidationAutoValidation();

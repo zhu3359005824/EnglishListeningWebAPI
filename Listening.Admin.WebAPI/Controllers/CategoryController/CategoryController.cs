@@ -1,14 +1,11 @@
 ﻿
 using Listening.Admin.WebAPI.Categories;
-using Listening.Admin.WebAPI.Controllers.AlbumController;
 using Listening.Domain;
 using Listening.Domain.Entity;
 using Listening.Infrastructure;
 
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
 using ZHZ.UnitOkWork;
 
@@ -16,9 +13,9 @@ namespace Listening.Admin.WebAPI.Controllers.CategoryController
 {
     [Route("[controller]/[action]")]
     [ApiController]
-   // [Authorize(Roles = "Admin")]
-   [ Authorize]
-    
+    // [Authorize(Roles = "Admin")]
+    [Authorize]
+
     public class CategoryController : ControllerBase
     {
         private readonly ListeningDbContext _dbCtx;
@@ -34,8 +31,8 @@ namespace Listening.Admin.WebAPI.Controllers.CategoryController
             _memoryCache = memoryCache;
         }
 
-      
-       
+
+
 
 
         [HttpGet]
@@ -98,18 +95,18 @@ namespace Listening.Admin.WebAPI.Controllers.CategoryController
             return await _listeningRepository.GetAllCategoryAsync();
         }
 
-      
+
 
         [HttpPost]
         [UnitOfWork(typeof(ListeningDbContext))]
         public async Task<ActionResult<Guid>> Add(CategoryAddRequest req)
         {
-            var category = await _listeningDomainService.AddCategory(req.Name,req.ShowIndex,req.CoverUrl);
+            var category = await _listeningDomainService.AddCategory(req.Name, req.ShowIndex, req.CoverUrl);
             _dbCtx.Add(category);
             return category.Id;
         }
 
-        
+
 
         [HttpGet]
         [Route("{categoryName}")]

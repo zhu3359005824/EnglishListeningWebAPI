@@ -1,7 +1,4 @@
 ﻿using Listening.Domain;
-using Listening.Main.WebAPI.Controllers.AlbumController;
-using Listening.Main.WebAPI.Controllers.CategoryController;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
 
@@ -31,7 +28,7 @@ namespace Listening.Main.WebAPI.Controllers.EpisodeController
                 e.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(Random.Shared.Next(5, 10));
                 e.SlidingExpiration = TimeSpan.FromMinutes(1);
 
-                return EpisodeModel.Create(await _listeningRepository.FindEpisodeByNameAsync(Name),true);
+                return EpisodeModel.Create(await _listeningRepository.FindEpisodeByNameAsync(Name), true);
 
 
             });
@@ -54,7 +51,7 @@ namespace Listening.Main.WebAPI.Controllers.EpisodeController
                 e.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(Random.Shared.Next(5, 10));
                 e.SlidingExpiration = TimeSpan.FromMinutes(1);
 
-                return EpisodeModel.Create(await _listeningRepository.GetAllEpisodeByAlbumNameAsync(albumName),true);
+                return EpisodeModel.Create(await _listeningRepository.GetAllEpisodeByAlbumNameAsync(albumName), true);
 
 
             });

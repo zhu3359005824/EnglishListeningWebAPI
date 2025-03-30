@@ -1,6 +1,4 @@
 ﻿using Listening.Domain;
-using Listening.Main.WebAPI.Controllers.AlbumController;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
 

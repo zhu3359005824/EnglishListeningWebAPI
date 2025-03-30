@@ -2,7 +2,7 @@
 
 namespace ZHZ.UnitOkWork
 {
-    [AttributeUsage(AttributeTargets.Class |AttributeTargets.Method,
+    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method,
             AllowMultiple = false)]
     public class UnitOfWorkAttribute : Attribute
     {

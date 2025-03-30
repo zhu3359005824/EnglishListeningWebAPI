@@ -1,31 +1,27 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Cryptography;
+﻿using System.Security.Cryptography;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace ZHZ.Tools
 {
     public static class HashHelper
     {
-       public static string ComputeSHA256HashUsingStream(Stream stream)
+        public static string ComputeSHA256HashUsingStream(Stream stream)
         {
-                // 创建SHA256哈希算法实例
-                using (SHA256 sha256 = SHA256.Create())
+            // 创建SHA256哈希算法实例
+            using (SHA256 sha256 = SHA256.Create())
+            {
+                // 计算哈希值
+                byte[] hashBytes = sha256.ComputeHash(stream);
+
+                // 将哈希值字节数组转换为十六进制字符串
+                StringBuilder sb = new StringBuilder();
+                foreach (byte b in hashBytes)
                 {
-                    // 计算哈希值
-                    byte[] hashBytes = sha256.ComputeHash(stream);
-
-                    // 将哈希值字节数组转换为十六进制字符串
-                    StringBuilder sb = new StringBuilder();
-                    foreach (byte b in hashBytes)
-                    {
-                        sb.Append(b.ToString("x2")); // "x2"表示以两位十六进制格式输出
-                    }
-
-                    return sb.ToString();
+                    sb.Append(b.ToString("x2")); // "x2"表示以两位十六进制格式输出
                 }
+
+                return sb.ToString();
+            }
         }
 
 

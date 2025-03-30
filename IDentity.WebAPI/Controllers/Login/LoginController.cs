@@ -1,8 +1,6 @@
-using GlobalConfigurations;
 using IDentity.Domain;
 using IDentity.Domain.Entity;
 using IDentity.WebAPI.Event;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using ZHZ.EventBus;
@@ -80,10 +78,10 @@ namespace IDentity.WebAPI.Controllers.Login
 
             if (IsLogin.Succeeded)
             {
-                
 
-                
-              
+
+
+
 
                 return token;
             }

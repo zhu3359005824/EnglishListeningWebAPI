@@ -1,8 +1,4 @@
-
-using FileService.Domain;
-using FileService.Infrastructure;
 using GlobalConfigurations;
-using Microsoft.EntityFrameworkCore;
 
 namespace FileService.WebAPI
 {
@@ -19,7 +15,7 @@ namespace FileService.WebAPI
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
-            
+
 
             builder.ConfigureExtensionService(new InitializerOptions()
             {
@@ -35,7 +31,7 @@ namespace FileService.WebAPI
                 app.UseSwaggerUI();
             }
 
-           app.UseZhzDefault();
+            app.UseZhzDefault();
 
 
             app.MapControllers();

@@ -1,13 +1,9 @@
 ﻿using FluentValidation;
-using GlobalConfigurations;
-using Listening.Admin.WebAPI.Controllers.CategoryController;
 using Listening.Admin.WebAPI.Controllers.EpisodeController;
-using Listening.Infrastructure;
-using Microsoft.EntityFrameworkCore;
 
 namespace Listening.Admin.WebAPI.Controllers.EpisodeController
 {
-    public record AddEpisodeRequest(string albumName,string sentenceContext,string sentenceType,string episodeName, Uri AudioUrl)
+    public record AddEpisodeRequest(string albumName, string sentenceContext, string sentenceType, string episodeName, Uri AudioUrl)
     {
     }
 }
@@ -31,7 +27,7 @@ public class AddEpisodeRequestValidator : AbstractValidator<AddEpisodeRequest>
         RuleFor(x => x.sentenceType).NotEmpty().WithMessage("展示索引不能为空");
 
 
-        
+
 
 
     }

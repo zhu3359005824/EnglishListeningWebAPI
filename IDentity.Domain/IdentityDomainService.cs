@@ -1,12 +1,7 @@
 ﻿using IDentity.Domain.Entity;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Security.Claims;
-using System.Text;
-using System.Threading.Tasks;
 using ZHZ.JWT;
 
 namespace IDentity.Domain
@@ -29,7 +24,7 @@ namespace IDentity.Domain
 
         public async Task<SignInResult> CheckPassword(MyUser user, string password)
         {
-           
+
 
 
             var result = await _identityRepository.CheckPassword(user, password);
@@ -44,7 +39,7 @@ namespace IDentity.Domain
             {
                 return SignInResult.LockedOut;
             }
-              await _identityRepository.AccessFailedAsync(user);
+            await _identityRepository.AccessFailedAsync(user);
 
             return SignInResult.Failed;
 
@@ -52,12 +47,12 @@ namespace IDentity.Domain
 
         }
 
-        public async Task<(SignInResult signInResult,string? userToken)> LoginByPhoneNumberAndPwdAsync(string phoneNumber, string pwd)
+        public async Task<(SignInResult signInResult, string? userToken)> LoginByPhoneNumberAndPwdAsync(string phoneNumber, string pwd)
         {
             var user = await _identityRepository.FindByPhoneNumberAsync(phoneNumber);
             if (user == null)
             {
-              
+
                 return (SignInResult.Failed, null);
             }
             else
@@ -65,14 +60,15 @@ namespace IDentity.Domain
                 var result = await CheckPassword(user, pwd);
                 if (result.Succeeded)
                 {
-                   string userToken=await BuildUserTokenAsync(user);
+                    string userToken = await BuildUserTokenAsync(user);
 
-                    return (SignInResult.Success,userToken);
-                } else if (result.IsLockedOut)
+                    return (SignInResult.Success, userToken);
+                }
+                else if (result.IsLockedOut)
                 {
-                    return(SignInResult.LockedOut,null);
-                } 
-                else 
+                    return (SignInResult.LockedOut, null);
+                }
+                else
                 {
                     return (SignInResult.Failed, null);
                 }

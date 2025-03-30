@@ -1,11 +1,8 @@
-﻿
-using Listening.Admin.WebAPI.Controllers.CategoryController;
-using Listening.Domain;
+﻿using Listening.Domain;
 using Listening.Domain.Entity;
 using Listening.Infrastructure;
 
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
 using ZHZ.EventBus;
@@ -16,7 +13,7 @@ namespace Listening.Admin.WebAPI.Controllers.EpisodeController
     [Route("[controller]/[action]")]
     [ApiController]
     [Authorize(Roles = "Admin")]
-   
+
     public class EpisodeController : ControllerBase
     {
         private readonly ListeningDbContext _dbCtx;
@@ -42,14 +39,14 @@ namespace Listening.Admin.WebAPI.Controllers.EpisodeController
         [HttpPost]
         public async Task<ActionResult<Guid>> AddEpisode(AddEpisodeRequest request)
         {
-            var album=await _listeningRepository.FindAlbumByNameAsync(request.albumName);
+            var album = await _listeningRepository.FindAlbumByNameAsync(request.albumName);
 
-            if (album == null) 
+            if (album == null)
             {
                 return BadRequest($"Album_{request.albumName}不存在");
             }
 
-            if(request.AudioUrl.ToString().EndsWith("m4a",StringComparison.OrdinalIgnoreCase))
+            if (request.AudioUrl.ToString().EndsWith("m4a", StringComparison.OrdinalIgnoreCase))
             {
                 Episode episode = new Episode(album.Id, request.sentenceContext, request.sentenceType,
                 request.episodeName);
@@ -71,20 +68,20 @@ namespace Listening.Admin.WebAPI.Controllers.EpisodeController
                     request.sentenceContext,
                     request.sentenceType,
                     "Created");
-             await   _episodeHelper.AddEncodingEpisodeAsync(request.episodeName, encodingEpisode);
+                await _episodeHelper.AddEncodingEpisodeAsync(request.episodeName, encodingEpisode);
 
                 //启动转码
                 _eventBus.Publish("MediaEncoding.Created", new
                 {
-                    EpisodeName= encodingEpisode.EpisodeName,
-                    OutputType="m4a",
-                    SourceSystem="Listening"
+                    EpisodeName = encodingEpisode.EpisodeName,
+                    OutputType = "m4a",
+                    SourceSystem = "Listening"
                 });
 
                 return episodeId;
             }
 
-            
+
 
         }
 

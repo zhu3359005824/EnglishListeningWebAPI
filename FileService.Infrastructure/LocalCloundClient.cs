@@ -8,11 +8,11 @@ namespace FileService.Infrastructure
 
         public async Task<Uri> SaveUploadItemAsync(string key, Stream context)
         {
-            using Stream writeStream=File.OpenWrite("E:/DDDProjectUpload" + key);
+            using Stream writeStream = File.OpenWrite("E:/DDDProjectUpload" + key);
             await context.CopyToAsync(writeStream);
 
             return new Uri("E:/DDDProjectUpload" + key);
-           
+
         }
     }
 

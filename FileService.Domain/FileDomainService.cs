@@ -1,9 +1,4 @@
 ﻿using FileService.Domain.Entity;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using ZHZ.Tools;
 
 namespace FileService.Domain
@@ -14,32 +9,32 @@ namespace FileService.Domain
         private readonly ICloundClient? _localcloundClient;
         private readonly ICloundClient? _publicloundClient;
 
-        public FileDomainService(IFileRepository fileRepository,IEnumerable<ICloundClient> cloundClients)
+        public FileDomainService(IFileRepository fileRepository, IEnumerable<ICloundClient> cloundClients)
         {
             _fileRepository = fileRepository;
-            _localcloundClient=cloundClients.FirstOrDefault(c=>c.type==CloundClientType.Local);
-            _publicloundClient=cloundClients.FirstOrDefault(c=>c.type==CloundClientType.Public);
-            
+            _localcloundClient = cloundClients.FirstOrDefault(c => c.type == CloundClientType.Local);
+            _publicloundClient = cloundClients.FirstOrDefault(c => c.type == CloundClientType.Public);
+
         }
 
-        public async Task<UploadItem> UploadItemAsync(Stream stream,string fileName)
+        public async Task<UploadItem> UploadItemAsync(Stream stream, string fileName)
         {
-            long fileByteSize= stream.Length;
+            long fileByteSize = stream.Length;
 
-            string fileSHA256Hash=HashHelper.ComputeSHA256HashUsingStream(stream);
+            string fileSHA256Hash = HashHelper.ComputeSHA256HashUsingStream(stream);
 
             UploadItem oldItem = await _fileRepository.FindOneAsync(fileByteSize, fileSHA256Hash);
 
-            if ( oldItem== null)
+            if (oldItem == null)
             {
                 DateTime CreateDateTime = DateTime.Today;
-                
+
                 //存储的文件夹
                 string key = $"{CreateDateTime.Year}/{CreateDateTime.Month}/{CreateDateTime.Day}/{fileSHA256Hash}/{fileName}";
 
                 stream.Position = 0;
-                
-                string fullPath = $"E:/DDDProjectUpload/{key}" ;
+
+                string fullPath = $"E:/DDDProjectUpload/{key}";
 
                 //创建目录
                 var directory = Path.GetDirectoryName(fullPath);
@@ -52,7 +47,7 @@ namespace FileService.Domain
 
                 }
                 //保存文件
-                using FileStream fileStream=new FileStream(fullPath, FileMode.Create,FileAccess.ReadWrite);
+                using FileStream fileStream = new FileStream(fullPath, FileMode.Create, FileAccess.ReadWrite);
                 await stream.CopyToAsync(fileStream);
 
 
@@ -60,8 +55,8 @@ namespace FileService.Domain
                 stream.Position = 0;
 
                 Guid id = Guid.NewGuid();
-                Uri srcUrl=new Uri(fullPath);
-                UploadItem uploadItem = new UploadItem(id,CreateDateTime,fileName,fileSHA256Hash,fileByteSize,srcUrl);
+                Uri srcUrl = new Uri(fullPath);
+                UploadItem uploadItem = new UploadItem(id, CreateDateTime, fileName, fileSHA256Hash, fileByteSize, srcUrl);
 
                 return uploadItem;
 
@@ -73,7 +68,7 @@ namespace FileService.Domain
             }
 
 
-        } 
+        }
 
     }
 }

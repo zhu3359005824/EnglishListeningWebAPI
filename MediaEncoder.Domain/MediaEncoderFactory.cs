@@ -1,14 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace MediaEncoder.Domain
+﻿namespace MediaEncoder.Domain
 {
     public class MediaEncoderFactory
     {
-        private readonly IEnumerable<IMediaEncoder> encoders ;
+        private readonly IEnumerable<IMediaEncoder> encoders;
 
         public MediaEncoderFactory(IEnumerable<IMediaEncoder> encoders)
         {

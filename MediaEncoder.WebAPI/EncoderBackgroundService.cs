@@ -1,10 +1,6 @@
-﻿
-using FileService.Domain.Entity;
-using FileService.Infrastructure;
+﻿using FileService.Infrastructure;
 using MediaEncoder.Domain;
 using MediaEncoder.Infrastructure;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 using RedLockNet.SERedis;
 using RedLockNet.SERedis.Configuration;
 using StackExchange.Redis;
@@ -44,23 +40,23 @@ namespace MediaEncoder.WebAPI
             //生产环境中，RedLock需要五台服务器才能体现价值，测试环境无所谓
             IConnectionMultiplexer connectionMultiplexer = sp.ServiceProvider.GetRequiredService<IConnectionMultiplexer>();
             this.redLockMultiplexerList = new List<RedLockMultiplexer> { new RedLockMultiplexer(connectionMultiplexer) };
-            _eventBus=sp.ServiceProvider.GetRequiredService<IEventBus>();
-            _uploadDbcontext=sp.ServiceProvider.GetRequiredService<MyDbContext>();
+            _eventBus = sp.ServiceProvider.GetRequiredService<IEventBus>();
+            _uploadDbcontext = sp.ServiceProvider.GetRequiredService<MyDbContext>();
 
-            _httpClientFactory=sp.ServiceProvider.GetRequiredService<IHttpClientFactory>();
+            _httpClientFactory = sp.ServiceProvider.GetRequiredService<IHttpClientFactory>();
         }
 
         public override void Dispose()
         {
             base.Dispose();
             _serviceScopeFactory.CreateScope().Dispose();
-          
+
         }
 
 
 
 
-        protected async  override Task ExecuteAsync(CancellationToken stoppingToken)
+        protected async override Task ExecuteAsync(CancellationToken stoppingToken)
         {
             while (!stoppingToken.IsCancellationRequested)
             {
@@ -90,9 +86,9 @@ namespace MediaEncoder.WebAPI
         /// <returns></returns>
         private static FileInfo BuildDestFileInfo(EncodingItem encodingItem)
         {
-            string outputType=encodingItem.OutType;
-            string tempDir=Path.GetTempPath();
-            string destFullPath=Path.Combine(tempDir,Guid.NewGuid()+"."+ outputType);
+            string outputType = encodingItem.OutType;
+            string tempDir = Path.GetTempPath();
+            string destFullPath = Path.Combine(tempDir, Guid.NewGuid() + "." + outputType);
 
             return new FileInfo(destFullPath);
         }
@@ -104,7 +100,7 @@ namespace MediaEncoder.WebAPI
         /// <returns></returns>
         private static string ComputeSHA256Hash(FileInfo fileInfo)
         {
-            using(FileStream fs = fileInfo.OpenRead())
+            using (FileStream fs = fileInfo.OpenRead())
             {
                 return HashHelper.ComputeSha256Hash(fs);
             }
@@ -119,12 +115,12 @@ namespace MediaEncoder.WebAPI
         /// <param name="outputType"></param>
         /// <param name="ct"></param>
         /// <returns></returns>
-        private  async Task<bool> EncodeAsync(FileInfo srcFile,FileInfo destFile,string outputType,CancellationToken ct)
+        private async Task<bool> EncodeAsync(FileInfo srcFile, FileInfo destFile, string outputType, CancellationToken ct)
         {
-            var encoder= _mediaEncoderFactory.Create(outputType);
+            var encoder = _mediaEncoderFactory.Create(outputType);
             if (encoder == null)
             {
-                Debug.Fail(string.Format("找不到转码器,目标格式{0}",outputType));
+                Debug.Fail(string.Format("找不到转码器,目标格式{0}", outputType));
                 return false;
             }
 
@@ -141,10 +137,10 @@ namespace MediaEncoder.WebAPI
         }
 
 
-        private async Task<(bool ok ,FileInfo srcFile,Uri destUrl)> GetUploadFile(EncodingItem encodingItem,CancellationToken ct)
+        private async Task<(bool ok, FileInfo srcFile, Uri destUrl)> GetUploadFile(EncodingItem encodingItem, CancellationToken ct)
         {
             var srcName = encodingItem.FileName;
-           var src= _uploadDbcontext.UploadItems.Where(t => t.FileName == srcName).ToList();
+            var src = _uploadDbcontext.UploadItems.Where(t => t.FileName == srcName).ToList();
 
             var srcUrl = src[0].SourceUrl;
 
@@ -154,7 +150,7 @@ namespace MediaEncoder.WebAPI
             string sourceFullPath = Path.Combine(tempDir, Guid.NewGuid() + "."
                 + Path.GetExtension(encodingItem.FileName));
 
-            Uri destUrl=new Uri(sourceFullPath);
+            Uri destUrl = new Uri(sourceFullPath);
 
 
             FileInfo sourceFile = new FileInfo(sourceFullPath);
@@ -163,18 +159,18 @@ namespace MediaEncoder.WebAPI
             Debug.WriteLine($"Id={id}，准备从{encodingItem.SourceUrl}下载到{sourceFullPath}");
 
             HttpClient client = _httpClientFactory.CreateClient();
-         var statusCode=  await  client.DownloadFileAsync(srcUrl, sourceFullPath);
+            var statusCode = await client.DownloadFileAsync(srcUrl, sourceFullPath);
 
 
             if (statusCode != HttpStatusCode.OK)
             {
                 Debug.WriteLine($"下载Id={id}，Url={encodingItem.SourceUrl}失败，{statusCode}");
                 sourceFile.Delete();
-                return (false, sourceFile,null);
+                return (false, sourceFile, null);
             }
             else
             {
-                return (true, sourceFile,destUrl);
+                return (true, sourceFile, destUrl);
             }
 
 
@@ -202,13 +198,13 @@ namespace MediaEncoder.WebAPI
             await _mediaEncoderDbContext.SaveChangesAsync(ct);//立即保存一下状态的修改
                                                               //发出一次集成事件
 
-            (var downloadOk, var srcFile,var destUrl) = await GetUploadFile(encItem, ct);
+            (var downloadOk, var srcFile, var destUrl) = await GetUploadFile(encItem, ct);
             if (!downloadOk)
             {
                 encItem.Fail($"下载失败");
                 return;
             }
-       
+
             FileInfo destFile = BuildDestFileInfo(encItem);
             try
             {
@@ -235,7 +231,7 @@ namespace MediaEncoder.WebAPI
                 }
                 //开始上传
                 Console.WriteLine($"Id={id}转码成功，开始准备上传");
-                
+
                 encItem.Complete(destUrl);
                 encItem.ChangeFileMeta(fileSize, srcFileHash);
                 Console.WriteLine($"Id={id}转码结果上传成功");

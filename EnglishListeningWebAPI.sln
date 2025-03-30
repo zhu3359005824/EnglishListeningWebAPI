@@ -51,7 +51,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MediaEncoder.Infrastructure
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MediaEncoder.WebAPI", "MediaEncoder.WebAPI\MediaEncoder.WebAPI.csproj", "{2B580146-BB8F-43EF-99C7-B173AC147AB2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ZHZ.EventBus", "ZHZ.EventBus\ZHZ.EventBus.csproj", "{0410841C-67E7-4357-B8ED-C58EA46964AF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ZHZ.EventBus", "ZHZ.EventBus\ZHZ.EventBus.csproj", "{0410841C-67E7-4357-B8ED-C58EA46964AF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

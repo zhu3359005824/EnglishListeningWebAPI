@@ -1,18 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using ZHZ.Entity;
+﻿using ZHZ.Entity;
 
 
 
 
 namespace FileService.Domain.Entity
 {
-    public class UploadItem :AggregateRootEntity
+    public class UploadItem : AggregateRootEntity
     {
-      
+
         public string FileName { get; private set; }
 
         public string FileSHA256Hash { get; init; }
@@ -20,7 +15,7 @@ namespace FileService.Domain.Entity
         public long FileByteSize { get; init; }
 
         public Uri SourceUrl { get; init; }
-       
+
 
 
 

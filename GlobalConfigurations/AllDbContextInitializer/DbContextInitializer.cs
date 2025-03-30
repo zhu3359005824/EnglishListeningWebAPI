@@ -1,24 +1,19 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace GlobalConfigurations.AllDbContextInitializer
 {
     public static class DbContextInitializer
     {/// <summary>
-    /// 注册所有的DbContext
-    /// </summary>
-    /// <param name="services"></param>
-    /// <param name="builder"></param>
-    /// <param name="assemblies"></param>
-    /// <returns></returns>
+     /// 注册所有的DbContext
+     /// </summary>
+     /// <param name="services"></param>
+     /// <param name="builder"></param>
+     /// <param name="assemblies"></param>
+     /// <returns></returns>
         public static IServiceCollection
-            AddAllDbContext(this IServiceCollection services, Action<DbContextOptionsBuilder> builder,IEnumerable<Assembly> assemblies)
+            AddAllDbContext(this IServiceCollection services, Action<DbContextOptionsBuilder> builder, IEnumerable<Assembly> assemblies)
         {
 
 
@@ -45,6 +40,6 @@ namespace GlobalConfigurations.AllDbContextInitializer
 
 
 
-    
-}
+
+    }
 }

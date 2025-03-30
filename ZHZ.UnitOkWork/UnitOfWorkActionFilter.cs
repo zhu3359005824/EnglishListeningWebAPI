@@ -11,7 +11,7 @@ namespace ZHZ.UnitOkWork
     {
         public async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
         {
-          var result=  await next();
+            var result = await next();
 
             var actionDesc = context.ActionDescriptor as ControllerActionDescriptor;
 
@@ -23,10 +23,10 @@ namespace ZHZ.UnitOkWork
             //获取有UnitOfWork标记的方法
             var hasUnitOfWork = actionDesc.MethodInfo.GetCustomAttributes(typeof(UnitOfWorkAttribute), true).FirstOrDefault() as UnitOfWorkAttribute;
 
-           
+
             if (hasUnitOfWork == null)
             {
-                
+
                 return;
             }
             using TransactionScope txScope = new(TransactionScopeAsyncFlowOption.Enabled);
@@ -41,7 +41,7 @@ namespace ZHZ.UnitOkWork
             }
 
 
-            
+
             if (result.Exception == null)
             {
                 foreach (var dbCtx in dbCtxs)

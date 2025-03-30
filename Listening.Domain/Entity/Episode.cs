@@ -1,11 +1,6 @@
 ﻿using Listening.Domain.Event;
 using Listening.Domain.SentenceParser;
 using Listening.Domain.ValueObject;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using ZHZ.Entity;
 
 namespace Listening.Domain.Entity
@@ -25,14 +20,14 @@ namespace Listening.Domain.Entity
         /// <summary>
         /// 字幕类型
         /// </summary>
-        
-        public string SentenceType {  get; set; }
+
+        public string SentenceType { get; set; }
 
         public string EpisodeName { get; set; }
 
         public int ShowIndex { get; set; }
 
-        public double RealSeconds { get; private  set; }
+        public double RealSeconds { get; private set; }
 
 
         public Episode(Guid albumId, string sentenceContxt, string sentenceType, string episodeName) : base()
@@ -46,7 +41,7 @@ namespace Listening.Domain.Entity
 
         public IEnumerable<Sentence> GetSentenceContext()
         {
-           var parser= ParserFactory.GetParser(SentenceType);
+            var parser = ParserFactory.GetParser(SentenceType);
             if (parser == null)
             {
                 throw new ArgumentNullException("parser为空");
@@ -63,7 +58,7 @@ namespace Listening.Domain.Entity
             return this;
         }
 
-        public   void SetRealSeconds(double seconds)
+        public void SetRealSeconds(double seconds)
         {
             this.RealSeconds = seconds;
         }

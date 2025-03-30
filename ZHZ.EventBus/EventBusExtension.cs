@@ -1,12 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using RabbitMQ.Client;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 using ZHZ.EventBus.Handler;
 using ZHZ.EventBus.RabbitMQ;
 
@@ -21,14 +16,14 @@ namespace ZHZ.EventBus
         /// <param name="queueName"></param>
         /// <param name="assemblies"></param>
         /// <returns></returns>
-        public static IServiceCollection AddEventBus(this IServiceCollection services,string queueName,IEnumerable<Assembly> assemblies)
+        public static IServiceCollection AddEventBus(this IServiceCollection services, string queueName, IEnumerable<Assembly> assemblies)
         {
             List<Type> eventHandlers = new List<Type>();
 
             foreach (Assembly assembly in assemblies)
             {
                 //用GetTypes()，这样非public类也能注册
-                var types = assembly.GetTypes().Where(t=>t.IsAbstract==false&&t.IsAssignableTo(typeof(IIntergrationEventHandler)));
+                var types = assembly.GetTypes().Where(t => t.IsAbstract == false && t.IsAssignableTo(typeof(IIntergrationEventHandler)));
 
                 eventHandlers.AddRange(types);
             }
@@ -49,9 +44,9 @@ namespace ZHZ.EventBus
         /// <exception cref="Exception"></exception>
         private static IServiceCollection AddEventBus(IServiceCollection services, string queueName, IEnumerable<Type> eventHandlers)
         {
-            foreach(var type in eventHandlers)
+            foreach (var type in eventHandlers)
             {
-                services.AddScoped(type,type);
+                services.AddScoped(type, type);
             }
 
             services.AddSingleton<IEventBus>(sp =>
@@ -73,14 +68,14 @@ namespace ZHZ.EventBus
                 }
 
 
-                var serviceScopeFactory=sp.GetRequiredService<IServiceScopeFactory>();
+                var serviceScopeFactory = sp.GetRequiredService<IServiceScopeFactory>();
 
-                var eventBus = new RabbitMQEventBus(factory, serviceScopeFactory,queueName,options.ExchangeName);
+                var eventBus = new RabbitMQEventBus(factory, serviceScopeFactory, queueName, options.ExchangeName);
 
-                foreach(var type in eventHandlers)
+                foreach (var type in eventHandlers)
                 {
-                    var eventNameAttributes=type.GetCustomAttributes<EventNameAttribute>();
-                    if (eventNameAttributes.Any()== false)
+                    var eventNameAttributes = type.GetCustomAttributes<EventNameAttribute>();
+                    if (eventNameAttributes.Any() == false)
                     {
                         throw new Exception($"应该至少有一个EventNameAttribute在处理器{type}上");
                     }

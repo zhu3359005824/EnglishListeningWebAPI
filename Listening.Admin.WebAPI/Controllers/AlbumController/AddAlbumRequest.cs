@@ -1,23 +1,19 @@
 ﻿using FluentValidation;
-using GlobalConfigurations;
 using Listening.Admin.WebAPI.Controllers.AlbumController;
-using Listening.Domain.Entity;
 using Listening.Infrastructure;
-using Microsoft.EntityFrameworkCore;
-using System.Text.Json.Serialization;
 
 namespace Listening.Admin.WebAPI.Controllers.AlbumController
 {
-   
-    public record AddAlbumRequest(string AlbumName, string CategoryName,int ShowIndex ) 
+
+    public record AddAlbumRequest(string AlbumName, string CategoryName, int ShowIndex)
     {
-       
-        
+
+
     }
 
     //把校验规则写到单独的文件，也是DDD的一种原则
 
-    
+
 
 }
 public class AddAlbumRequestValidator : AbstractValidator<AddAlbumRequest>
@@ -31,7 +27,7 @@ public class AddAlbumRequestValidator : AbstractValidator<AddAlbumRequest>
         // 校验 ShowIndex 不为空
         RuleFor(x => x.ShowIndex).NotEmpty().WithMessage("展示索引不能为空");
 
-       
+
 
 
 

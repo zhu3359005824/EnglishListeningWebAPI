@@ -1,13 +1,11 @@
 ﻿using FluentValidation;
 using GlobalConfigurations;
 using Listening.Admin.WebAPI.Controllers.CategoryController;
-using Listening.Domain.Entity;
 using Listening.Infrastructure;
-using Microsoft.EntityFrameworkCore;
 
 namespace Listening.Admin.WebAPI.Controllers.CategoryController
 {
-    public record AddCategoryRequest(string CategoryName, int ShowIndex):IValidationData;
+    public record AddCategoryRequest(string CategoryName, int ShowIndex) : IValidationData;
 
     //把校验规则写到单独的文件，也是DDD的一种原则
 
@@ -24,7 +22,7 @@ public class CategoryAddRequestValidator : AbstractValidator<AddCategoryRequest>
         RuleFor(x => x.ShowIndex).NotEmpty().WithMessage("展示索引不能为空");
 
 
-        
+
 
     }
 }

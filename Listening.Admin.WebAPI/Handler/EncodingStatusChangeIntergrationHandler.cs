@@ -3,7 +3,6 @@ using Listening.Domain;
 using Listening.Domain.Entity;
 using Listening.Infrastructure;
 using Microsoft.AspNetCore.SignalR;
-using Microsoft.EntityFrameworkCore;
 using ZHZ.EventBus;
 using ZHZ.EventBus.Handler;
 
@@ -31,7 +30,7 @@ namespace Listening.Admin.WebAPI.Handler
             _hubContext = hubContext;
         }
 
-        public override  async Task HandleDynamic(string eventName, dynamic eventData)
+        public override async Task HandleDynamic(string eventName, dynamic eventData)
         {
             string sourceSystem = eventData.SourceSystem;
             if (sourceSystem != "Listening")//可能是别的系统的转码消息
@@ -66,9 +65,9 @@ namespace Listening.Admin.WebAPI.Handler
                     /*
                     Episode episode = Episode.Create(id, maxSeq.Value + 1, encodingEpisode.Name, albumId, outputUrl,
                         encodingEpisode.DurationInSecond, encodingEpisode.SubtitleType, encodingEpisode.Subtitle);*/
-                    
 
-                    Episode episode = new Episode(albumId, encItem.SentenceContext,encItem.SentenceType,encItem.EpisodeName);
+
+                    Episode episode = new Episode(albumId, encItem.SentenceContext, encItem.SentenceType, encItem.EpisodeName);
                     _context.Add(episode);
                     await _context.SaveChangesAsync();
                     await _hubContext.Clients.All.SendAsync("OnMediaEncodingCompleted", episodeName);//通知前端刷新

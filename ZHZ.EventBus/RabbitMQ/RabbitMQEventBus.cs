@@ -1,15 +1,10 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
-using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Text.Json;
-using System.Threading.Tasks;
 using ZHZ.EventBus.Handler;
 
 namespace ZHZ.EventBus.RabbitMQ
@@ -24,7 +19,7 @@ namespace ZHZ.EventBus.RabbitMQ
     {
 
 
-       
+
         private readonly IServiceScopeFactory _serviceScopeFactory;
         private readonly SubscriptionManager _subscriptionManager;
 
@@ -39,23 +34,23 @@ namespace ZHZ.EventBus.RabbitMQ
 
 
         public string ExchangeName { get; set; }
-       
+
 
         public string QueueName { get; set; }
 
-        public RabbitMQEventBus(IConnectionFactory connectionFactory,IServiceScopeFactory serviceScopeFactory,  string queueName,string exchangeName )
+        public RabbitMQEventBus(IConnectionFactory connectionFactory, IServiceScopeFactory serviceScopeFactory, string queueName, string exchangeName)
         {
-            ExchangeName=exchangeName;
+            ExchangeName = exchangeName;
             _serviceScopeFactory = serviceScopeFactory;
 
             _serviceScope = _serviceScopeFactory.CreateScope();
             _subscriptionManager = new SubscriptionManager();
-          
+
             QueueName = queueName;
             _subscriptionManager.OnEventRemoved += SubsManager_OnEventRemoved;
             _connectionFactory = connectionFactory;
             _channel = Start();
-            
+
         }
 
         public IChannel Start()
@@ -112,7 +107,7 @@ namespace ZHZ.EventBus.RabbitMQ
             {
                 using (var channel = _connection.CreateChannelAsync().Result)
                 {
-                   await  channel.ExchangeDeclareAsync(ExchangeName, ExchangeType.Direct);
+                    await channel.ExchangeDeclareAsync(ExchangeName, ExchangeType.Direct);
 
                     byte[] body;
 
@@ -134,7 +129,7 @@ namespace ZHZ.EventBus.RabbitMQ
                     };
 
 
-                    await channel.BasicPublishAsync(ExchangeName, eventName,  true, property,body);
+                    await channel.BasicPublishAsync(ExchangeName, eventName, true, property, body);
 
                 }
 
@@ -144,7 +139,7 @@ namespace ZHZ.EventBus.RabbitMQ
 
         public void Subscribe(string eventName, Type handlerType)
         {
-           CheckHandlerType(handlerType);
+            CheckHandlerType(handlerType);
             ChangeBindEvent(eventName);
             _subscriptionManager.AddSubscription(eventName, handlerType);
 

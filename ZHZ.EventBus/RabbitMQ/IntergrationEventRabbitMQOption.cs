@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace ZHZ.EventBus.RabbitMQ
+﻿namespace ZHZ.EventBus.RabbitMQ
 {/// <summary>
 /// 集成事件RabbitMQ配置类
 /// </summary>

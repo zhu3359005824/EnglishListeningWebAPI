@@ -1,11 +1,4 @@
-﻿using FileService.Domain.Entity;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace FileService.Domain
+﻿namespace FileService.Domain
 {
     /// <summary>
     /// 服务器接口
@@ -15,13 +8,13 @@ namespace FileService.Domain
         CloundClientType type { get; }
 
 
-        Task<Uri> SaveUploadItemAsync(string key,Stream context);
+        Task<Uri> SaveUploadItemAsync(string key, Stream context);
     }
 }
 
 
-    public enum CloundClientType
-    {
-       Public,
-       Local
-    }
+public enum CloundClientType
+{
+    Public,
+    Local
+}

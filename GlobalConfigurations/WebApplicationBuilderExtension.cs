@@ -9,21 +9,12 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Identity.Client;
-using Newtonsoft.Json;
 using StackExchange.Redis;
 using Swashbuckle.AspNetCore.SwaggerGen;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
-using System.Linq;
 using System.Reflection;
-using System.Runtime.CompilerServices;
-using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using System.Threading.Tasks;
 using ZHZ.EventBus;
 using ZHZ.EventBus.RabbitMQ;
 using ZHZ.Infrastructure.MediatR;
@@ -35,12 +26,12 @@ namespace GlobalConfigurations
 {
     public static class WebApplicationBuilderExtension
     {
-        public  static void  ConfigureExtensionService(this WebApplicationBuilder builder,InitializerOptions initializerOptions)
+        public static void ConfigureExtensionService(this WebApplicationBuilder builder, InitializerOptions initializerOptions)
         {
             builder.Configuration.AddEnvironmentVariables();
             //依赖注入容器
             IServiceCollection service = builder.Services;
-            IConfiguration configuration=builder.Configuration;
+            IConfiguration configuration = builder.Configuration;
 
 
 
@@ -59,7 +50,7 @@ namespace GlobalConfigurations
 
 
 
-           
+
 
 
 
@@ -95,8 +86,8 @@ namespace GlobalConfigurations
             builder.Services.AddAuthentication();
             builder.Services.AddAuthorization();
 
-          
-           
+
+
 
             builder.Services.AddJWTAuthentication(configuration.GetSection("JWTSettings").Get<JWTSettings>());
 
@@ -225,11 +216,11 @@ namespace GlobalConfigurations
             );
 
 
-            
-            
-           
 
-          service.AddEventBus(initializerOptions.EventBusQueueName, assemblies);
+
+
+
+            service.AddEventBus(initializerOptions.EventBusQueueName, assemblies);
 
             //Redis的配置
             string redisConnStr = configuration.GetSection("MyRedisOption").Get<MyRedisOption>().ConnectionString;

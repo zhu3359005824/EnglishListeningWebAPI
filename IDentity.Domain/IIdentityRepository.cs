@@ -1,10 +1,5 @@
 ﻿using IDentity.Domain.Entity;
 using Microsoft.AspNetCore.Identity;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace IDentity.Domain
 {
@@ -22,20 +17,20 @@ namespace IDentity.Domain
         Task<IdentityResult> AddUserAsync(MyUser user, string password);//创建用户
         Task<IdentityResult> AccessFailedAsync(MyUser user);//记录一次登陆失败
 
-        Task<SignInResult> CheckPassword(MyUser user,string password);
+        Task<SignInResult> CheckPassword(MyUser user, string password);
 
-        Task<IdentityResult> UserSetRole(MyUser user,string roleName);
+        Task<IdentityResult> UserSetRole(MyUser user, string roleName);
 
-        Task<IdentityResult> ChangePhoneNumber(MyUser user,string phoneNum,string token);
-        Task<IdentityResult> ChangePasswordAsync(MyUser user,string newpassword);
+        Task<IdentityResult> ChangePhoneNumber(MyUser user, string phoneNum, string token);
+        Task<IdentityResult> ChangePasswordAsync(MyUser user, string newpassword);
 
-      Task<IdentityResult> CreateRole(string roleName);
+        Task<IdentityResult> CreateRole(string roleName);
         Task ResetAccessFailedCount(MyUser user);
 
 
-     
+
 
         Task<IList<string>> GetRolesAsync(MyUser user);
-       Task<(IdentityResult, MyUser?, string? password)> AddAdminUserAsync(string userName, string phoneNum);
+        Task<(IdentityResult, MyUser?, string? password)> AddAdminUserAsync(string userName, string phoneNum);
     }
 }

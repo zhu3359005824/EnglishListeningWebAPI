@@ -1,19 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Listening.Domain.SentenceParser
+﻿namespace Listening.Domain.SentenceParser
 {
     public class ParserFactory
     {
         private static List<ISentenceParser> sentenceParsers = new List<ISentenceParser>();
 
-       static  ParserFactory()
+        static ParserFactory()
         {
-            var parsers=typeof(ISentenceParser).Assembly.GetTypes().Where(t=>typeof(ISentenceParser)
-            .IsAssignableFrom(t)&&!t.IsAbstract);
+            var parsers = typeof(ISentenceParser).Assembly.GetTypes().Where(t => typeof(ISentenceParser)
+            .IsAssignableFrom(t) && !t.IsAbstract);
 
             foreach (var item in parsers)
             {
@@ -27,7 +21,7 @@ namespace Listening.Domain.SentenceParser
         {
             foreach (var item in sentenceParsers)
             {
-               if(item.CanParse(sentenceType))
+                if (item.CanParse(sentenceType))
                 {
                     return item;
                 }

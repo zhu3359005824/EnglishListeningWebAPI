@@ -1,18 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using ZHZ.Entity;
+﻿using ZHZ.Entity;
 
 namespace Listening.Domain.Entity
 {
     /// <summary>
     /// 听力的分类,如4级,6级
     /// </summary>
-    public class Category:AggregateRootEntity
+    public class Category : AggregateRootEntity
     {
-        public Category( string categoryName,Uri? coverUrl, int showIndex) : base()
+        public Category(string categoryName, Uri? coverUrl, int showIndex) : base()
         {
             CategoryName = categoryName;
             ShowIndex = showIndex;
@@ -21,13 +16,13 @@ namespace Listening.Domain.Entity
 
         }
 
-        public string CategoryName { get;set; }
+        public string CategoryName { get; set; }
 
         /// <summary>
         /// 显示顺序 
         /// </summary>
         public int ShowIndex { get; private set; }
-       
+
 
         /// <summary>
         /// 封面图片。现在一般都不会直接把图片保存到数据库中（Blob），而是只是保存图片的路径。

@@ -1,10 +1,4 @@
 ﻿using Microsoft.AspNetCore.Builder;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using ZHZ.EventBus;
 
 namespace GlobalConfigurations
 {/// <summary>
@@ -13,10 +7,10 @@ namespace GlobalConfigurations
     public static class ApplicationBuilderExtension
     {
 
-        public static IApplicationBuilder 
+        public static IApplicationBuilder
             UseZhzDefault(this IApplicationBuilder app)
         {
-           // app.UseEventBus();
+            // app.UseEventBus();
             app.UseCors();
 
             app.UseForwardedHeaders();

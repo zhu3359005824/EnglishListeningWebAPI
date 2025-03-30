@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using ZHZ.EventBus.RabbitMQ;
+﻿using ZHZ.EventBus.RabbitMQ;
 using ZHZ.JWT;
 
 namespace GlobalConfigurations.配置类
