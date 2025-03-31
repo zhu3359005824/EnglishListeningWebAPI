@@ -76,7 +76,7 @@ namespace Listening.Infrastructure
 
         public async Task<Album[]?> GetAllAlbumByCategoryNameAsync(string categoryName)
         {
-            return await _context.Albums.OrderBy(r => r.ShowIndex).ToArrayAsync();
+            return await _context.Albums.Where(e=>e.CategoryName==categoryName).OrderBy(r => r.ShowIndex).ToArrayAsync();
         }
 
         public async Task<Category[]?> GetAllCategoryAsync()
@@ -86,7 +86,7 @@ namespace Listening.Infrastructure
 
         public async Task<Episode[]?> GetAllEpisodeByAlbumNameAsync(string albumName)
         {
-            return await _context.Episodes.OrderBy(e => e.ShowIndex).ToArrayAsync();
+            return await _context.Episodes.Where(e=>e.AlbumName==albumName).OrderBy(e => e.ShowIndex).ToArrayAsync();
         }
 
         public async Task<int> GetMaxIndexOfAlbumsAsync(Guid categotyId)
@@ -106,12 +106,14 @@ namespace Listening.Infrastructure
 
 
 
-        public async Task<int> GetMaxIndexOfEpisodesAsync(Guid albumId)
+        public async Task<int> GetMaxIndexOfEpisodesAsync(string albumName)
         {
-            var maxIndex = await _context.Episodes.Where(e => e.AlbumId == albumId).OrderByDescending(e => e.ShowIndex).FirstAsync();
+            var maxIndex = await _context.Episodes.Where(e => e.AlbumName == albumName).OrderByDescending(e => e.ShowIndex).FirstAsync();
 
             return maxIndex.ShowIndex;
         }
+
+       
 
         public Task UpdateAlbum(Album album, string categoryName)
         {

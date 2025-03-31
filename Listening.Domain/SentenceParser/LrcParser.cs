@@ -7,7 +7,7 @@ namespace Listening.Domain.SentenceParser
 
     // 导包Opportunity.LrcParser
 
-    internal class LrcParser : ISentenceParser
+    public class LrcParser : ISentenceParser
     {
         public bool CanParse(string sentenceType)
         {

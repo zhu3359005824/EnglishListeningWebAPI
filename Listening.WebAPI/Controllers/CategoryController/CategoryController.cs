@@ -18,29 +18,6 @@ namespace Listening.Main.WebAPI.Controllers.CategoryController
         }
 
 
-        [HttpGet]
-        public async Task<ActionResult<CategoryModel>> FindByCategoryName(string Category)
-        {
-
-            var Model = await _memoryCache.GetOrCreateAsync($"CategoryModel_FindByCategoryName_{Category}", async (e) =>
-            {
-
-                e.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(Random.Shared.Next(5, 10));
-                e.SlidingExpiration = TimeSpan.FromMinutes(1);
-
-                return CategoryModel.Create(await _listeningRepository.FindCategoryByNameAsync(Category));
-
-
-            });
-
-            if (Model == null)
-            {
-                return NotFound();
-            }
-
-            return Model;
-        }
-
 
         [HttpGet]
         public async Task<ActionResult<CategoryModel[]>> FindAllCategory()

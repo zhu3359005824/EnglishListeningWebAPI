@@ -18,40 +18,19 @@ namespace Listening.Main.WebAPI.Controllers.AlbumController
         }
 
 
-        [HttpGet]
-        public async Task<ActionResult<AlbumModel>> FindByAlbumName(string albumName)
-        {
-
-            var albumModel = await _memoryCache.GetOrCreateAsync($"AlbumModel_FindByAlbumName_{albumName}", async (e) =>
-            {
-
-                e.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(Random.Shared.Next(5, 10));
-                e.SlidingExpiration = TimeSpan.FromMinutes(1);
-
-                return AlbumModel.Create(await _listeningRepository.FindAlbumByNameAsync(albumName));
-
-
-            });
-
-            if (albumModel == null)
-            {
-                return NotFound();
-            }
-
-            return albumModel;
-        }
-
+       
 
         [HttpGet]
-        public async Task<ActionResult<AlbumModel[]>> FindAlbumsByCategoryName(string categoryName)
+        [Route("{name}")]
+        public async Task<ActionResult<AlbumModel[]>> FindAlbumsByCategoryName(string name)
         {
-            var albumModels = await _memoryCache.GetOrCreateAsync($"AlbumModels_FindByCategoryName_{categoryName}", async (e) =>
+            var albumModels = await _memoryCache.GetOrCreateAsync($"AlbumModels_FindByCategoryName_{name}", async (e) =>
             {
 
-                e.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(Random.Shared.Next(5, 10));
+                e.AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(Random.Shared.Next(5, 10));
                 e.SlidingExpiration = TimeSpan.FromMinutes(1);
 
-                return AlbumModel.Create(await _listeningRepository.GetAllAlbumByCategoryNameAsync(categoryName));
+                return AlbumModel.Create(await _listeningRepository.GetAllAlbumByCategoryNameAsync(name));
 
 
             });

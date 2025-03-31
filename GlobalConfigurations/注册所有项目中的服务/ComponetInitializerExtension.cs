@@ -14,7 +14,7 @@ namespace GlobalConfigurations.注册所有项目中的服务
 
         public static IServiceCollection
             RunComponentInitializer(this IServiceCollection services, IEnumerable<Assembly> assemblies)
-        {
+         {
 
             foreach (Assembly assembly in assemblies)
             {

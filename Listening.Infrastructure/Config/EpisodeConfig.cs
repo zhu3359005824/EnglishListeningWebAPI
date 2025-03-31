@@ -10,7 +10,7 @@ namespace Listening.Infrastructure.Config
         {
             builder.ToTable("T_Episodes");
             builder.HasKey(e => e.Id).IsClustered(false);//Guid类型不要聚集索引，否则会影响性能
-            builder.HasIndex(e => new { e.AlbumId, e.IsDeleted });//索引不要忘了加上IsDeleted，否则会影响性能
+            builder.HasIndex(e => new { e.AlbumName, e.IsDeleted });//索引不要忘了加上IsDeleted，否则会影响性能
 
             builder.HasQueryFilter(e => e.IsDeleted);
 

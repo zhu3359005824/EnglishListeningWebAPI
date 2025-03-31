@@ -39,16 +39,7 @@ namespace Listening.Admin.WebAPI.Controllers.CategoryController
         public async Task<ActionResult<CategoryModel>> FindByCategoryName(string Category)
         {
 
-            var Model = await _memoryCache.GetOrCreateAsync($"CategoryModel_FindByCategoryName_{Category}", async (e) =>
-            {
-
-                e.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(Random.Shared.Next(5, 10));
-                e.SlidingExpiration = TimeSpan.FromMinutes(1);
-
-                return CategoryModel.Create(await _listeningRepository.FindCategoryByNameAsync(Category));
-
-
-            });
+            var Model = CategoryModel.Create(await _listeningRepository.FindCategoryByNameAsync(Category));
 
             if (Model == null)
             {
@@ -62,16 +53,7 @@ namespace Listening.Admin.WebAPI.Controllers.CategoryController
         [HttpGet]
         public async Task<ActionResult<CategoryModel[]>> FindAllCategory()
         {
-            var Models = await _memoryCache.GetOrCreateAsync($"CategoryModels_FindAllCategory", async (e) =>
-            {
-
-                e.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(Random.Shared.Next(5, 10));
-                e.SlidingExpiration = TimeSpan.FromMinutes(1);
-
-                return CategoryModel.Create(await _listeningRepository.GetAllCategoryAsync());
-
-
-            });
+            var Models = CategoryModel.Create(await _listeningRepository.GetAllCategoryAsync());
 
             if (Models == null)
             {

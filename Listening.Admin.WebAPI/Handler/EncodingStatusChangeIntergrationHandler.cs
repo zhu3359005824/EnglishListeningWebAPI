@@ -60,14 +60,14 @@ namespace Listening.Admin.WebAPI.Handler
                     //Uri outputUrl = new Uri(eventData.OutputUrl);
                     var encItem = await _episodeHelper.GetEncodingEpisodeAsync(episodeName);
 
-                    Guid albumId = encItem.AlbumId;
-                    int maxSeq = await _repository.GetMaxIndexOfEpisodesAsync(albumId);
+                  
+                    int maxSeq = await _repository.GetMaxIndexOfEpisodesAsync(encItem.AlbumName);
                     /*
                     Episode episode = Episode.Create(id, maxSeq.Value + 1, encodingEpisode.Name, albumId, outputUrl,
                         encodingEpisode.DurationInSecond, encodingEpisode.SubtitleType, encodingEpisode.Subtitle);*/
 
 
-                    Episode episode = new Episode(albumId, encItem.SentenceContext, encItem.SentenceType, encItem.EpisodeName);
+                    Episode episode = new Episode(encItem.AlbumName, encItem.SentenceContext, encItem.SentenceType, encItem.EpisodeName,eventData.OutputUrl);
                     _context.Add(episode);
                     await _context.SaveChangesAsync();
                     await _hubContext.Clients.All.SendAsync("OnMediaEncodingCompleted", episodeName);//通知前端刷新

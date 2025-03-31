@@ -23,7 +23,7 @@ namespace Listening.Domain
 
         public Task<int> GetMaxIndexOfAlbumsAsync(Guid categotyId);
 
-        public Task<int> GetMaxIndexOfEpisodesAsync(Guid albumId);
+        public Task<int> GetMaxIndexOfEpisodesAsync(string albumName);
 
 
 

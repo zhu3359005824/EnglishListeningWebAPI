@@ -48,8 +48,9 @@ namespace Listening.Admin.WebAPI.Controllers.EpisodeController
 
             if (request.AudioUrl.ToString().EndsWith("m4a", StringComparison.OrdinalIgnoreCase))
             {
-                Episode episode = new Episode(album.Id, request.sentenceContext, request.sentenceType,
-                request.episodeName);
+
+                Episode episode = new Episode(album.AlbumName, request.sentenceContext, request.sentenceType,
+                request.episodeName,request.AudioUrl);
 
                 _dbCtx.Episodes.Add(episode);
 
@@ -73,7 +74,8 @@ namespace Listening.Admin.WebAPI.Controllers.EpisodeController
                 //启动转码
                 _eventBus.Publish("MediaEncoding.Created", new
                 {
-                    EpisodeName = encodingEpisode.EpisodeName,
+                    Id=episodeId,
+                    FileName=encodingEpisode.EpisodeName,
                     OutputType = "m4a",
                     SourceSystem = "Listening"
                 });

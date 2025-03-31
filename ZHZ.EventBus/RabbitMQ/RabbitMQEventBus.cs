@@ -26,10 +26,13 @@ namespace ZHZ.EventBus.RabbitMQ
         private readonly IConnectionFactory _connectionFactory;
 
         private IChannel _channel;
+        private IChannel _channel_consume;
 
         private IConnection _connection;
 
         private readonly IServiceScope _serviceScope;
+
+        public bool IsConsume=false;
 
 
 
@@ -42,183 +45,127 @@ namespace ZHZ.EventBus.RabbitMQ
         {
             ExchangeName = exchangeName;
             _serviceScopeFactory = serviceScopeFactory;
-
-            _serviceScope = _serviceScopeFactory.CreateScope();
             _subscriptionManager = new SubscriptionManager();
-
             QueueName = queueName;
             _subscriptionManager.OnEventRemoved += SubsManager_OnEventRemoved;
             _connectionFactory = connectionFactory;
             _channel = Start();
+           // _channel_consume = ConsumeChannel();
+            _channel.BasicQosAsync(0,prefetchCount:1,true);
+           // _channel_consume.BasicQosAsync(0, prefetchCount: 1, true);
 
+        }
+
+        public IChannel ConsumeChannel()
+        {
+            var channel = _connection.CreateChannelAsync().GetAwaiter().GetResult();
+            channel.ContinuationTimeout =TimeSpan.FromMinutes(1);
+            channel.ExchangeDeclareAsync(ExchangeName, ExchangeType.Topic).GetAwaiter().GetResult();
+            channel.QueueDeclareAsync(QueueName, durable: true, exclusive: false, autoDelete: false, arguments: null)
+                .GetAwaiter().GetResult();
+            return channel;
         }
 
         public IChannel Start()
         {
-            _connection = _connectionFactory.CreateConnectionAsync().Result;
-            if (_connection == null)
-                throw new InvalidOperationException("Failed to create RabbitMQ connection.");
-
-            var channel = _connection.CreateChannelAsync().Result;
-            if (channel == null)
-                throw new InvalidOperationException("Failed to create RabbitMQ channel.");
-
-            // 匹配交换机
-            channel.ExchangeDeclareAsync(ExchangeName, ExchangeType.Direct);
-            // 匹配队列
-            channel.QueueDeclareAsync(QueueName, true, false, false, null);
-
-            channel.CallbackExceptionAsync += (sender, ea) =>
+            try
             {
-                Debug.Fail(ea.ToString());
-                return null;
-            };
+                _connection = _connectionFactory.CreateConnectionAsync().GetAwaiter().GetResult();
+               
+                var channel = _connection.CreateChannelAsync().GetAwaiter().GetResult();
+                channel.ContinuationTimeout = TimeSpan.FromMinutes(1);
+                channel.ExchangeDeclareAsync(ExchangeName, ExchangeType.Topic).GetAwaiter().GetResult();
+                channel.QueueDeclareAsync(QueueName, durable: true, exclusive: false, autoDelete: false, arguments: null)
+                    .GetAwaiter().GetResult();
+                return channel;
+            }
+            catch (Exception ex)
+            {
+                Debug.Fail($"RabbitMQ初始化失败: {ex}");
+                throw;
+            }
+        }
 
-            return channel;
+
+
+
+        /// <summary>
+        /// 生产者代码
+        /// </summary>
+        /// <param name="eventName"></param>
+        /// <param name="eventData"></param>
+        public async void Publish(string eventName, object? eventData)
+        {
+            if (!_connection.IsOpen)
+            {
+                Debug.Fail("连接未打开，无法发布消息。");
+                return;
+            }
+            try
+            {
+                
+                    var body = eventData == null
+                        ? new byte[0]
+                        : JsonSerializer.SerializeToUtf8Bytes(eventData);
+
+                    var properties = new BasicProperties { DeliveryMode = DeliveryModes.Persistent };
+                  await  _channel.BasicPublishAsync(
+                        exchange: ExchangeName,
+                        routingKey: eventName,
+                        mandatory: true,
+                        basicProperties: properties,
+                        body: body
+                    );
+                
+                    Console.WriteLine($"已发布事件{eventName}到交换机{ExchangeName}");
+                
+            }
+            catch (Exception ex)
+            {
+                Debug.Fail($"发布消息失败: {ex}");
+            }
         }
 
         /// <summary>
-        /// 当事件管理器中有事件移除时触发的操作
+        /// 订阅服务
         /// </summary>
-        /// <param name="sender"></param>
         /// <param name="eventName"></param>
-        private void SubsManager_OnEventRemoved(object? sender, string eventName)
-        {
-            if (_connection.IsOpen)
-            {
-                using (var channel = _connection.CreateChannelAsync().Result)
-                {
-                    channel.QueueUnbindAsync(QueueName, ExchangeName, eventName);
-                }
-                if (_subscriptionManager.IsEmpty)
-                {
-                    QueueName = string.Empty;
-                    _channel.CloseAsync();
-                }
-
-
-            }
-        }
-
-        public async void Publish(string eventName, object? eventData)
-        {
-
-            if (_connection.IsOpen)
-            {
-                using (var channel = _connection.CreateChannelAsync().Result)
-                {
-                    await channel.ExchangeDeclareAsync(ExchangeName, ExchangeType.Direct);
-
-                    byte[] body;
-
-                    if (eventData == null) body = new byte[0];
-                    else
-                    {
-                        JsonSerializerOptions options = new JsonSerializerOptions()
-                        {
-                            WriteIndented = true,
-                        };
-                        body = JsonSerializer.SerializeToUtf8Bytes(eventData, eventData.GetType(), options);
-                    }
-
-
-                    var property = new BasicProperties()
-                    {
-                        DeliveryMode = DeliveryModes.Persistent
-
-                    };
-
-
-                    await channel.BasicPublishAsync(ExchangeName, eventName, true, property, body);
-
-                }
-
-            }
-
-        }
-
+        /// <param name="handlerType"></param>
         public void Subscribe(string eventName, Type handlerType)
         {
             CheckHandlerType(handlerType);
             ChangeBindEvent(eventName);
             _subscriptionManager.AddSubscription(eventName, handlerType);
-
             StartBasicConsume();
-        }
-
-        //取消订阅
-        public void UnSubscribe(string eventName, Type handlerType)
-        {
-            CheckHandlerType(handlerType);
-
-            _subscriptionManager.RemoveSubscription(eventName, handlerType);
-        }
-
-        /// <summary>
-        /// 对Handler进行检查
-        /// </summary>
-        /// <param name="handlerType"></param>
-        /// <exception cref="ArgumentException"></exception>
-        public void CheckHandlerType(Type handlerType)
-        {
-            if (!typeof(IIntergrationEventHandler).IsAssignableFrom(handlerType))
-            {
-                throw new ArgumentException($"{handlerType} 不能继承自 IIntergrationEventHandler");
-            }
-        }
-
-        /// <summary>
-        /// 将eventName作为routingKey进行交换机与队列的绑定
-        /// </summary>
-        /// <param name="eventName"></param>
-        public void ChangeBindEvent(string eventName)
-        {
-            var containsKey = _subscriptionManager.HasSubscriptionsByEvent(eventName);
-
-            if (!containsKey)
-            {
-                if (!_connection.IsOpen)
-                {
-                    _connection = _connectionFactory.CreateConnectionAsync().Result;
-                }
-
-                //绑定交换机与队列   
-                _channel.QueueBindAsync(QueueName, ExchangeName, eventName, null);
-
-
-            }
-        }
-
-
-
-
-        public void Dispose()
-        {
-            if (_connection != null)
-            {
-                _channel.Dispose();
-            }
-
-            _subscriptionManager.Clear();
-
-            _connection.Dispose();
-
-            _serviceScope.Dispose();
-
         }
 
         /// <summary>
         /// 开始消费
         /// </summary>
-        private async void StartBasicConsume()
+        public async void StartBasicConsume()
         {
-            if (_channel != null)
+            if (_channel != null && _channel.IsOpen)
             {
                 var consumer = new AsyncEventingBasicConsumer(_channel);
-
                 consumer.ReceivedAsync += Consumer_Received;
 
-                await _channel.BasicConsumeAsync(QueueName, false, consumer);
+                try
+                {
+                    await _channel.BasicConsumeAsync(
+                        queue: QueueName,
+                        autoAck: false, // 手动确认消息
+                        consumer: consumer
+                    );
+                    Console.WriteLine($"已启动消费者监听队列: {QueueName}");
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"启动消费者失败: {ex}");
+                }
+            }
+            else
+            {
+                Console.WriteLine("通道未初始化或已关闭，无法启动消费者。");
             }
         }
 
@@ -268,23 +215,117 @@ namespace ZHZ.EventBus.RabbitMQ
 
                 foreach (var handlerType in subscriptionsHandlerType)
                 {
-                    //各自在不同的Scope中，避免DbContext等的共享造成如下问题：
-                    //The instance of entity type cannot be tracked because another instance
-                    using var scope = _serviceScope.ServiceProvider.CreateScope();
-                    var handler = scope.ServiceProvider.GetService(handlerType) as IIntergrationEventHandler;
-
-                    if (handler == null)
+                    using (var scope = _serviceScopeFactory.CreateScope())
                     {
-                        throw new ApplicationException($"无法创建{handlerType}的服务");
-                    }
+                        var handler = scope.ServiceProvider.GetService(handlerType) as IIntergrationEventHandler;
+                        if (handler == null)
+                        {
+                            Debug.Fail($"无法创建{handlerType}的实例");
+                            continue;
+                        }
 
-                    await handler.Handle(eventName, message);
+                        try
+                        {
+                            await handler.Handle(eventName, message);
+                        }
+                        catch (Exception ex)
+                        {
+                            Debug.Fail($"处理事件{eventName}时出错: {ex}");
+                        }
+                    }
                 }
             }
             else
             {
-                string entryAsm = Assembly.GetEntryAssembly().GetName().Name;
-                Debug.WriteLine($"找不到可以处理eventName={eventName}的处理程序，entryAsm:{entryAsm}");
+                Debug.WriteLine($"没有找到处理事件{eventName}的订阅者。");
+            }
+        }
+
+        /// <summary>
+        /// 将eventName作为routingKey进行交换机与队列的绑定
+        /// </summary>
+        /// <param name="eventName"></param>
+        private void ChangeBindEvent(string eventName)
+        {
+            if (!_subscriptionManager.HasSubscriptionsByEvent(eventName))
+            {
+                if (!_connection.IsOpen)
+                {
+                    // 尝试重新连接
+                    _connection = _connectionFactory.CreateConnectionAsync().GetAwaiter().GetResult();
+                }
+
+                // 绑定队列到交换机，使用eventName作为路由键
+                _channel.QueueBindAsync(
+                    queue: QueueName,
+                    exchange: ExchangeName,
+                    routingKey: eventName
+                ).GetAwaiter().GetResult();
+            }
+        }
+
+
+
+
+
+
+
+        //取消订阅
+        public void UnSubscribe(string eventName, Type handlerType)
+        {
+            CheckHandlerType(handlerType);
+
+            _subscriptionManager.RemoveSubscription(eventName, handlerType);
+        }
+
+        /// <summary>
+        /// 对Handler进行检查
+        /// </summary>
+        /// <param name="handlerType"></param>
+        /// <exception cref="ArgumentException"></exception>
+        public void CheckHandlerType(Type handlerType)
+        {
+            if (!typeof(IIntergrationEventHandler).IsAssignableFrom(handlerType))
+            {
+                throw new ArgumentException($"{handlerType} 不能继承自 IIntergrationEventHandler");
+            }
+        }
+
+        public void Dispose()
+        {
+            if (_connection != null)
+            {
+                _channel.Dispose();
+            }
+
+            _subscriptionManager.Clear();
+
+            _connection.Dispose();
+
+            _serviceScope.Dispose();
+
+        }
+
+        /// <summary>
+        /// 当事件管理器中有事件移除时触发的操作
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="eventName"></param>
+        private void SubsManager_OnEventRemoved(object? sender, string eventName)
+        {
+            if (_connection.IsOpen)
+            {
+                using (var channel = _connection.CreateChannelAsync().Result)
+                {
+                    channel.QueueUnbindAsync(QueueName, ExchangeName, eventName);
+                }
+                if (_subscriptionManager.IsEmpty)
+                {
+                    QueueName = string.Empty;
+                    _channel.CloseAsync();
+                }
+
+
             }
         }
     }

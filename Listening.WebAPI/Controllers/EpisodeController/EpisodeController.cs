@@ -19,16 +19,17 @@ namespace Listening.Main.WebAPI.Controllers.EpisodeController
 
 
         [HttpGet]
-        public async Task<ActionResult<EpisodeModel>> FindEpisodeByName(string Name)
+        [Route("{name}")]
+        public async Task<ActionResult<EpisodeModel>> FindEpisodeByName(string name)
         {
 
-            var Model = await _memoryCache.GetOrCreateAsync($"EpisodeModel_FindEpisodeByName_{Name}", async (e) =>
+            var Model = await _memoryCache.GetOrCreateAsync($"EpisodeModel_FindEpisodeByName_{name}", async (e) =>
             {
 
                 e.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(Random.Shared.Next(5, 10));
                 e.SlidingExpiration = TimeSpan.FromMinutes(1);
 
-                return EpisodeModel.Create(await _listeningRepository.FindEpisodeByNameAsync(Name), true);
+                return EpisodeModel.Create(await _listeningRepository.FindEpisodeByNameAsync(name), true);
 
 
             });
@@ -43,15 +44,16 @@ namespace Listening.Main.WebAPI.Controllers.EpisodeController
 
 
         [HttpGet]
-        public async Task<ActionResult<EpisodeModel[]>> FindEpisodesByAlbumName(string albumName)
+        [Route("{name}")]
+        public async Task<ActionResult<EpisodeModel[]>> FindEpisodesByAlbumName(string name)
         {
-            var Models = await _memoryCache.GetOrCreateAsync($"EpisodeModels_FindEpisodesByAlbumName_{albumName}", async (e) =>
+            var Models = await _memoryCache.GetOrCreateAsync($"EpisodeModels_FindEpisodesByAlbumName_{name}", async (e) =>
             {
 
                 e.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(Random.Shared.Next(5, 10));
                 e.SlidingExpiration = TimeSpan.FromMinutes(1);
 
-                return EpisodeModel.Create(await _listeningRepository.GetAllEpisodeByAlbumNameAsync(albumName), true);
+                return EpisodeModel.Create(await _listeningRepository.GetAllEpisodeByAlbumNameAsync(name), true);
 
 
             });

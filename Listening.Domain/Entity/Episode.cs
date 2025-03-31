@@ -10,7 +10,9 @@ namespace Listening.Domain.Entity
     /// </summary>
     public class Episode : AggregateRootEntity
     {
-        public Guid AlbumId { get; set; }
+       
+
+        public string AlbumName { get; set; }
 
         /// <summary>
         /// 字幕内容
@@ -29,14 +31,18 @@ namespace Listening.Domain.Entity
 
         public double RealSeconds { get; private set; }
 
+        public Uri AudioUrl { get; set; }
 
-        public Episode(Guid albumId, string sentenceContxt, string sentenceType, string episodeName) : base()
+
+        public Episode(string albumName, string sentenceContxt, string sentenceType, string episodeName, Uri audioUrl) : base()
         {
-            AlbumId = albumId;
+          
             SentenceContxt = sentenceContxt;
             SentenceType = sentenceType;
             EpisodeName = episodeName;
             this.AddDomainEvent(new EpisodeCreatedEvent(this));
+            AudioUrl = audioUrl;
+            AlbumName = albumName;
         }
 
         public IEnumerable<Sentence> GetSentenceContext()

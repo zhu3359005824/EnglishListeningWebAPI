@@ -71,7 +71,8 @@ namespace ZHZ.EventBus
                 var factory = new ConnectionFactory()
                 {
                     HostName = options.HostName,
-                    ConsumerDispatchConcurrency = 2
+                    
+                   
                 };
                 if (options.UserName != null)
                 {

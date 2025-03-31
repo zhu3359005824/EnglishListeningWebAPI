@@ -35,7 +35,7 @@ namespace Listening.Admin.WebAPI.Handler
                 Id = episode.Id,
                 episode.EpisodeName,
                 Sentences = sentences,
-                episode.AlbumId,
+                episode.AlbumName,
                 episode.SentenceContxt,
                 episode.SentenceType
             });

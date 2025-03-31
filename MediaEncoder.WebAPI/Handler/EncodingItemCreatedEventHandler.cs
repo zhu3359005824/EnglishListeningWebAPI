@@ -4,6 +4,8 @@ using MediatR;
 using ZHZ.EventBus;
 
 namespace MediaEncoder.WebAPI.EventHandlers;
+
+
 class EncodingItemCreatedEventHandler : INotificationHandler<EncodingItemCreatedEvent>
 {
     private readonly IEventBus eventBus;

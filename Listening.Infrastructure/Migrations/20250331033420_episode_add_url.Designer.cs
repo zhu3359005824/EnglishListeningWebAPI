@@ -4,6 +4,7 @@ using Listening.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Listening.Infrastructure.Migrations
 {
     [DbContext(typeof(ListeningDbContext))]
-    partial class ListeningDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250331033420_episode_add_url")]
+    partial class episode_add_url
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -100,9 +103,8 @@ namespace Listening.Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("AlbumName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<Guid>("AlbumId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("AudioUrl")
                         .IsRequired()
@@ -143,7 +145,7 @@ namespace Listening.Infrastructure.Migrations
 
                     SqlServerKeyBuilderExtensions.IsClustered(b.HasKey("Id"), false);
 
-                    b.HasIndex("AlbumName", "IsDeleted");
+                    b.HasIndex("AlbumId", "IsDeleted");
 
                     b.ToTable("T_Episodes", (string)null);
                 });

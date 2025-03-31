@@ -7,12 +7,12 @@ namespace Listening.Domain.SentenceParser
 
     // 导包SubtitlesParser.Classes.Parsers;
 
-    public class SrcParser : ISentenceParser
+    public class SrtParser : ISentenceParser
     {
         public bool CanParse(string sentenceType)
-        {
-            return sentenceType.Equals("src", StringComparison.OrdinalIgnoreCase) ||
+        { bool result= sentenceType.Equals("srt", StringComparison.OrdinalIgnoreCase) ||
                  sentenceType.Equals("vrc", StringComparison.OrdinalIgnoreCase);
+            return result;
         }
 
         public IEnumerable<Sentence> Parse(string sentenceContext)

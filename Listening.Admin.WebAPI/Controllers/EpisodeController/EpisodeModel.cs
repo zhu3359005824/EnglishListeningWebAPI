@@ -2,7 +2,7 @@
 
 namespace Listening.Admin.WebAPI.Controllers.EpisodeController
 {
-    public record EpisodeModel(Guid id, string sentenceContxt, string sentenceType, Guid albumId, double RealSeconds, IEnumerable<SentenceModel> SentenceModels)
+    public record EpisodeModel(Guid id, string sentenceContxt, string sentenceType,string AlbumName, double RealSeconds, IEnumerable<SentenceModel> SentenceModels)
     {
         public static EpisodeModel? Create(Episode a, bool IsParse)
         {
@@ -23,7 +23,7 @@ namespace Listening.Admin.WebAPI.Controllers.EpisodeController
 
             }
 
-            return new EpisodeModel(a.Id, a.SentenceContxt, a.SentenceType, a.AlbumId, a.RealSeconds,
+            return new EpisodeModel(a.Id, a.SentenceContxt, a.SentenceType, a.AlbumName, a.RealSeconds,
                 list);
         }
 

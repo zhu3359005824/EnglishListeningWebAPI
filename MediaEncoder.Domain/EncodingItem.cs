@@ -38,7 +38,7 @@ namespace MediaEncoder.Domain
 
 
 
-        public static EncodingItem Create(Guid id, string name, Uri sourceUrl, string outputType, string sourceSystem)
+        public static EncodingItem Create(Guid id, string name, string outputType, string sourceSystem)
         {
             EncodingItem item = new EncodingItem()
             {
@@ -46,7 +46,7 @@ namespace MediaEncoder.Domain
                 CreateTime = DateTime.Now,
                 FileName = name,
                 OutType = outputType,
-                SourceUrl = sourceUrl,
+                
                 Status = ItemStatus.Ready,
                 SourceSystem = sourceSystem,
             };

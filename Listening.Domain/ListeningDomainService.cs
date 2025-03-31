@@ -33,7 +33,7 @@ namespace Listening.Domain
             return newAlbum;
 
         }
-        public async Task<Episode> AddEpisode(string episodeName, Guid albumId, string sentenceContext, string setenceType)
+        public async Task<Episode> AddEpisode(Uri audioUrl,string episodeName, Guid albumId, string sentenceContext, string setenceType)
         {
 
             var album = await _listeningRepository.FindAlbumByIdAsync(albumId);
@@ -43,7 +43,7 @@ namespace Listening.Domain
             }
             var episode = await _listeningRepository.FindEpisodeByNameAsync(episodeName);
             if (episode != null) return episode;
-            Episode newEpisode = new Episode(albumId, sentenceContext, setenceType, episodeName);
+            Episode newEpisode = new Episode(album.AlbumName, sentenceContext, setenceType, episodeName,audioUrl);
             return newEpisode;
 
         }
