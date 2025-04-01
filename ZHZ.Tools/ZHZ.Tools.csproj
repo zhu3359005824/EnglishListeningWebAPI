@@ -8,6 +8,12 @@
 
   <ItemGroup>
     <PackageReference Include="AsmResolver.DotNet" Version="5.5.1" />
+    <PackageReference Include="Microsoft.Build" Version="17.8.3" />
+    <PackageReference Include="Microsoft.Build.Framework" Version="17.8.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ZHZ.EventBus\ZHZ.EventBus.csproj" />
   </ItemGroup>
 
 </Project>

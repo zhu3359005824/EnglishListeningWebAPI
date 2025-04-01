@@ -20,9 +20,9 @@ namespace MediaEncoder.Domain
         public string FileSHA256Hash { get; private set; }
 
 
-        public Uri SourceUrl { get; private set; }
+        public Uri? SourceUrl { get; private set; }
 
-        public Uri OutputUrl { get; private set; }
+        public Uri? OutputUrl { get; private set; }
 
         /// <summary>
         /// 转码类型
@@ -31,14 +31,14 @@ namespace MediaEncoder.Domain
 
         public ItemStatus Status { get; private set; }
 
-        public string LogText { get; private set; }
+        public string? LogText { get; private set; }
 
         private EncodingItem() { }
 
 
 
 
-        public static EncodingItem Create(Guid id, string name, string outputType, string sourceSystem)
+        public static EncodingItem Create(Guid id, string name, string outputType, string sourceSystem, string fileSHA256Hash, long fileByteSize)
         {
             EncodingItem item = new EncodingItem()
             {
@@ -46,6 +46,8 @@ namespace MediaEncoder.Domain
                 CreateTime = DateTime.Now,
                 FileName = name,
                 OutType = outputType,
+                FileByteSize=fileByteSize,
+                FileSHA256Hash=fileSHA256Hash,
                 
                 Status = ItemStatus.Ready,
                 SourceSystem = sourceSystem,
@@ -59,7 +61,7 @@ namespace MediaEncoder.Domain
             this.Status = ItemStatus.Started;
             this.LogText = "正在进行转码";
             //添加事件
-            AddDomainEvent(new EncodingItemStartedEvent(this.Id, SourceSystem));
+            AddDomainEvent(new EncodingItemStartedEvent(this.Id, SourceSystem,FileName));
 
 
         }
@@ -72,7 +74,7 @@ namespace MediaEncoder.Domain
             this.LogText = "转码成功";
 
             //添加事件
-            AddDomainEvent(new EncodingItemFinishEvent(this.Id, SourceSystem, OutputUrl));
+            AddDomainEvent(new EncodingItemFinishEvent(this.Id, SourceSystem, OutputUrl,FileName));
         }
 
         public void Fail(string logText)
@@ -80,7 +82,7 @@ namespace MediaEncoder.Domain
             this.Status = ItemStatus.Failed;
             this.LogText = logText;
             //添加事件
-            AddDomainEvent(new EncodingItemFailedEvent(this.Id, SourceSystem, logText));
+            AddDomainEvent(new EncodingItemFailedEvent(this.Id, SourceSystem, logText, FileName));
         }
 
         public void Fail(Exception exception)

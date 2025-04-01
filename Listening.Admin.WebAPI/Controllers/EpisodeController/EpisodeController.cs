@@ -1,4 +1,6 @@
-﻿using Listening.Domain;
+﻿using FileService.Domain.Entity;
+using FileService.Infrastructure;
+using Listening.Domain;
 using Listening.Domain.Entity;
 using Listening.Infrastructure;
 
@@ -24,7 +26,9 @@ namespace Listening.Admin.WebAPI.Controllers.EpisodeController
         private readonly IEventBus _eventBus;
         private readonly EncodingEpisodeHelper _episodeHelper;
 
-        public EpisodeController(ListeningDbContext dbCtx, IListeningRepository listeningRepository, ListeningDomainService listeningDomainService, IMemoryCache memoryCache, IEventBus eventBus, EncodingEpisodeHelper episodeHelper)
+        private readonly MyDbContext _fileDbContext;
+
+        public EpisodeController(ListeningDbContext dbCtx, IListeningRepository listeningRepository, ListeningDomainService listeningDomainService, IMemoryCache memoryCache, IEventBus eventBus, EncodingEpisodeHelper episodeHelper, MyDbContext fileDbContext)
         {
             _dbCtx = dbCtx;
             _listeningRepository = listeningRepository;
@@ -32,6 +36,7 @@ namespace Listening.Admin.WebAPI.Controllers.EpisodeController
             _memoryCache = memoryCache;
             _eventBus = eventBus;
             _episodeHelper = episodeHelper;
+            _fileDbContext = fileDbContext;
         }
 
 
@@ -60,6 +65,12 @@ namespace Listening.Admin.WebAPI.Controllers.EpisodeController
             {
                 Guid episodeId = Guid.NewGuid();
 
+               var uploadItem= _fileDbContext.UploadItems.FirstOrDefault<UploadItem>(e => e.SourceUrl == request.AudioUrl);
+                if (uploadItem == null) return BadRequest("文件上传失败");
+
+
+
+
                 EncodingEpisodeInfo encodingEpisode = new EncodingEpisodeInfo(
 
                      episodeId,
@@ -71,16 +82,14 @@ namespace Listening.Admin.WebAPI.Controllers.EpisodeController
                     "Created");
                 await _episodeHelper.AddEncodingEpisodeAsync(request.episodeName, encodingEpisode);
 
-                //启动转码
-                _eventBus.Publish("MediaEncoding.Created", new
-                {
-                    Id=episodeId,
-                    FileName=encodingEpisode.EpisodeName,
-                    OutputType = "m4a",
-                    SourceSystem = "Listening"
-                });
+                
 
-                return episodeId;
+                //启动转码
+                _eventBus.Publish("MediaEncoding.Created", 
+                new MediaEncodingData(episodeId, "Listening", encodingEpisode.EpisodeName,
+                                              "m4a",uploadItem.FileSHA256Hash,uploadItem.FileByteSize)
+                ); 
+                return episodeId;            
             }
 
 
@@ -93,11 +102,11 @@ namespace Listening.Admin.WebAPI.Controllers.EpisodeController
         [HttpGet]
         public void TestEvent()
         {
-            _eventBus.Publish("MediaEncoding.Created",new {
-                EpisodeName ="test",
-                    OutputType = "m4a",
-                    SourceSystem = "Listening"
-            });
+            _eventBus.Publish("MediaEncoding.Created",
+
+            new MediaEncodingData(Guid.NewGuid(), "Listening", "test",
+                                              "m4a","1",1)
+            );
         }
 
 

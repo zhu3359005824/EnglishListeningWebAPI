@@ -2,7 +2,7 @@
 
 namespace MediaEncoder.Domain.Events
 {
-    public record EncodingItemFinishEvent(Guid Id, string SourceSystem, Uri OutputUrl) : INotification
+    public record EncodingItemFinishEvent(Guid Id, string SourceSystem, Uri OutputUrl,string FileName) : INotification
     {
     }
 }

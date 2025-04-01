@@ -15,6 +15,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Listening.Domain\Listening.Domain.csproj" />
     <ProjectReference Include="..\Listening.Infrastructure\Listening.Infrastructure.csproj" />
+    <ProjectReference Include="..\MediaEncoder.WebAPI\MediaEncoder.WebAPI.csproj" />
   </ItemGroup>
 
 </Project>

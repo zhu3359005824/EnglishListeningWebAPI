@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MediaEncoder.Infrastructure.Migrations
 {
     [DbContext(typeof(MediaEncoderDbContext))]
-    [Migration("20250318090657_init")]
+    [Migration("20250401122513_init")]
     partial class init
     {
         /// <inheritdoc />
@@ -54,7 +54,6 @@ namespace MediaEncoder.Infrastructure.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("LogText")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("OutType")
@@ -64,7 +63,6 @@ namespace MediaEncoder.Infrastructure.Migrations
                         .HasColumnType("varchar(10)");
 
                     b.Property<string>("OutputUrl")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("SourceSystem")

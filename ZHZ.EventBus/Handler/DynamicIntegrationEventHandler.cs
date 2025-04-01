@@ -6,11 +6,12 @@ namespace ZHZ.EventBus.Handler
     {
         public Task Handle(string eventName, string eventData)
         {
-            dynamic c = JsonSerializer.Deserialize<dynamic>(eventData);
+            object c = JsonSerializer.Deserialize<object>(eventData)!;
 
-            return HandleDynamic(eventName, c);
+            return HandleEncodingItem(eventName, c);
         }
 
-        public abstract Task HandleDynamic(string eventName, dynamic eventData);
+        public abstract Task HandleEncodingItem(string eventName, object eventData);
     }
+ 
 }

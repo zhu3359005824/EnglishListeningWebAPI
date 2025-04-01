@@ -216,7 +216,7 @@ namespace MediaEncoder.WebAPI
                 if (prevInstance != null)
                 {
                     Console.WriteLine($"检查Id={id}Hash值成功，发现已经存在相同大小和Hash值的旧任务Id={prevInstance.Id}，返回！");
-                    _eventBus.Publish("MediaEncoding.Duplicated", new { encItem.Id, encItem.SourceSystem, OutputUrl = prevInstance.OutputUrl });
+                    _eventBus.Publish("MediaEncoding.Duplicated",  new DuplicateData(encItem.Id,encItem.FileName,encItem.OutputUrl,encItem.SourceSystem)  );
                     encItem.Complete(prevInstance.OutputUrl!);
                     return;
                 }
@@ -256,6 +256,24 @@ namespace MediaEncoder.WebAPI
 
 
 
+
+
+    }
+
+    public class DuplicateData
+    {
+        public DuplicateData(Guid id, string fileName, Uri outputUrl, string sourceSystem)
+        {
+            Id = id;
+            FileName = fileName;
+            OutputUrl = outputUrl;
+            SourceSystem = sourceSystem;
+        }
+
+        public Guid Id { get; set; }
+        public string FileName { get; set; }
+        public Uri OutputUrl { get; set; }
+        public string SourceSystem {  get; set; } 
 
 
     }

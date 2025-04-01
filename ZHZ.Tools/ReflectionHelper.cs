@@ -132,6 +132,7 @@ namespace ZHZ.Tools
         public static IEnumerable<Assembly> GetAllReferencedAssemblies(bool skipSystemAssemblies = true)
         {
             Assembly? rootAssembly = Assembly.GetEntryAssembly();
+            
             if (rootAssembly == null)
             {
                 rootAssembly = Assembly.GetCallingAssembly();

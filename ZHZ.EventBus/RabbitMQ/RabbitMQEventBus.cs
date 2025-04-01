@@ -50,21 +50,13 @@ namespace ZHZ.EventBus.RabbitMQ
             _subscriptionManager.OnEventRemoved += SubsManager_OnEventRemoved;
             _connectionFactory = connectionFactory;
             _channel = Start();
-           // _channel_consume = ConsumeChannel();
-            _channel.BasicQosAsync(0,prefetchCount:1,true);
-           // _channel_consume.BasicQosAsync(0, prefetchCount: 1, true);
+           
+           // _channel.BasicQosAsync(0,prefetchCount:1,true);
+          
 
         }
 
-        public IChannel ConsumeChannel()
-        {
-            var channel = _connection.CreateChannelAsync().GetAwaiter().GetResult();
-            channel.ContinuationTimeout =TimeSpan.FromMinutes(1);
-            channel.ExchangeDeclareAsync(ExchangeName, ExchangeType.Topic).GetAwaiter().GetResult();
-            channel.QueueDeclareAsync(QueueName, durable: true, exclusive: false, autoDelete: false, arguments: null)
-                .GetAwaiter().GetResult();
-            return channel;
-        }
+       
 
         public IChannel Start()
         {
@@ -74,7 +66,7 @@ namespace ZHZ.EventBus.RabbitMQ
                
                 var channel = _connection.CreateChannelAsync().GetAwaiter().GetResult();
                 channel.ContinuationTimeout = TimeSpan.FromMinutes(1);
-                channel.ExchangeDeclareAsync(ExchangeName, ExchangeType.Topic).GetAwaiter().GetResult();
+                channel.ExchangeDeclareAsync(ExchangeName, ExchangeType.Direct).GetAwaiter().GetResult();
                 channel.QueueDeclareAsync(QueueName, durable: true, exclusive: false, autoDelete: false, arguments: null)
                     .GetAwaiter().GetResult();
                 return channel;
@@ -103,29 +95,28 @@ namespace ZHZ.EventBus.RabbitMQ
             }
             try
             {
-                
-                    var body = eventData == null
-                        ? new byte[0]
-                        : JsonSerializer.SerializeToUtf8Bytes(eventData);
+               
 
-                    var properties = new BasicProperties { DeliveryMode = DeliveryModes.Persistent };
-                  await  _channel.BasicPublishAsync(
-                        exchange: ExchangeName,
-                        routingKey: eventName,
-                        mandatory: true,
-                        basicProperties: properties,
-                        body: body
-                    );
-                
-                    Console.WriteLine($"已发布事件{eventName}到交换机{ExchangeName}");
-                
+                var body = eventData == null
+                    ? new byte[0]
+                    : JsonSerializer.SerializeToUtf8Bytes(eventData);
+
+                var properties = new BasicProperties { DeliveryMode = DeliveryModes.Persistent };
+                await _channel.BasicPublishAsync(
+                      exchange: ExchangeName,
+                      routingKey: eventName,
+                      mandatory: true,
+                      basicProperties: properties,
+                      body: body
+                  );
+
+
             }
             catch (Exception ex)
             {
                 Debug.Fail($"发布消息失败: {ex}");
             }
         }
-
         /// <summary>
         /// 订阅服务
         /// </summary>
