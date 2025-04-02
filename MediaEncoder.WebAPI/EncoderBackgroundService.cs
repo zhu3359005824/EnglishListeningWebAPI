@@ -17,7 +17,7 @@ namespace MediaEncoder.WebAPI
         private readonly MediaEncoderDbContext _mediaEncoderDbContext;
         private readonly MyDbContext _uploadDbcontext;
         private readonly IMediaEncoderRepository _mediaEncoderRepository;
-        private readonly ILogger _logger;
+        //private readonly ILogger _logger;
         private readonly IServiceScopeFactory _serviceScopeFactory;
         private readonly IMediaEncoder _mediaEncoder;
 
@@ -33,7 +33,7 @@ namespace MediaEncoder.WebAPI
             var sp = serviceScopeFactory.CreateScope();
             _mediaEncoderDbContext = sp.ServiceProvider.GetRequiredService<MediaEncoderDbContext>();
             _mediaEncoderRepository = sp.ServiceProvider.GetRequiredService<IMediaEncoderRepository>();
-            _logger = sp.ServiceProvider.GetRequiredService<ILogger>();
+           // _logger = sp.ServiceProvider.GetRequiredService<ILogger>();
             _mediaEncoder = sp.ServiceProvider.GetRequiredService<IMediaEncoder>();
             _serviceScopeFactory = serviceScopeFactory;
             _mediaEncoderFactory = sp.ServiceProvider.GetRequiredService<MediaEncoderFactory>();
@@ -140,38 +140,56 @@ namespace MediaEncoder.WebAPI
         private async Task<(bool ok, FileInfo srcFile, Uri destUrl)> GetUploadFile(EncodingItem encodingItem, CancellationToken ct)
         {
             var srcName = encodingItem.FileName;
-            var src = _uploadDbcontext.UploadItems.Where(t => t.FileName == srcName).ToList();
+            
 
-            var srcUrl = src[0].SourceUrl;
+            var srcUrl = encodingItem.SourceUrl;
+
+          
+
+            
 
             //开始下载源文件
             string tempDir = Path.Combine(Path.GetTempPath(), "MediaEncodingDir");
             //源文件的临时保存路径
-            string sourceFullPath = Path.Combine(tempDir, Guid.NewGuid() + "."
+            string outputFullPath = Path.Combine(tempDir, Guid.NewGuid() + "."
                 + Path.GetExtension(encodingItem.FileName));
 
-            Uri destUrl = new Uri(sourceFullPath);
+            Uri destUrl = new Uri(outputFullPath);
 
 
-            FileInfo sourceFile = new FileInfo(sourceFullPath);
+            FileInfo sourceFile = new FileInfo(outputFullPath);
             Guid id = encodingItem.Id;
             sourceFile.Directory!.Create();//创建可能不存在的文件夹
-            Debug.WriteLine($"Id={id}，准备从{encodingItem.SourceUrl}下载到{sourceFullPath}");
+            Debug.WriteLine($"Id={id}，准备从{encodingItem.SourceUrl}下载到{outputFullPath}");
 
-            HttpClient client = _httpClientFactory.CreateClient();
-            var statusCode = await client.DownloadFileAsync(srcUrl, sourceFullPath);
+            //-------此处是使用的本地文件-------------
+            // 获取本地路径
+            string localPath = srcUrl.LocalPath;
 
-
-            if (statusCode != HttpStatusCode.OK)
-            {
-                Debug.WriteLine($"下载Id={id}，Url={encodingItem.SourceUrl}失败，{statusCode}");
-                sourceFile.Delete();
-                return (false, sourceFile, null);
-            }
-            else
+            // 复制文件（覆盖目标文件）
+            File.Copy(localPath, outputFullPath, overwrite: true);
+            //
+            if (sourceFile.Exists)
             {
                 return (true, sourceFile, destUrl);
             }
+            return (false, sourceFile, null);
+
+
+            //HttpClient client = _httpClientFactory.CreateClient();
+            //var statusCode = await client.DownloadFileAsync(srcUrl, outputFullPath);
+
+
+            //if (statusCode != HttpStatusCode.OK)
+            //{
+            //    Debug.WriteLine($"下载Id={id}，Url={encodingItem.SourceUrl}失败，{statusCode}");
+            //    sourceFile.Delete();
+            //    return (false, sourceFile, null);
+            //}
+            //else
+            //{
+            //    return (true, sourceFile, destUrl);
+            //}
 
 
 
@@ -212,7 +230,7 @@ namespace MediaEncoder.WebAPI
                 long fileSize = srcFile.Length;
                 string srcFileHash = ComputeSHA256Hash(srcFile);
                 //如果之前存在过和这个文件大小、hash一样的文件，就认为重复了
-                EncodingItem? prevInstance = await _mediaEncoderRepository.FindOneFinishAsync(srcFileHash, fileSize);
+                EncodingItem? prevInstance = await _mediaEncoderRepository.FindOneFinishAsync(srcFileHash, fileSize,ItemStatus.Completed);
                 if (prevInstance != null)
                 {
                     Console.WriteLine($"检查Id={id}Hash值成功，发现已经存在相同大小和Hash值的旧任务Id={prevInstance.Id}，返回！");

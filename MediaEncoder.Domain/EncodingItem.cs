@@ -38,7 +38,7 @@ namespace MediaEncoder.Domain
 
 
 
-        public static EncodingItem Create(Guid id, string name, string outputType, string sourceSystem, string fileSHA256Hash, long fileByteSize)
+        public static EncodingItem Create(Guid id, string name, string outputType, string sourceSystem, string fileSHA256Hash, long fileByteSize,Uri sourceUrl)
         {
             EncodingItem item = new EncodingItem()
             {
@@ -51,6 +51,7 @@ namespace MediaEncoder.Domain
                 
                 Status = ItemStatus.Ready,
                 SourceSystem = sourceSystem,
+                SourceUrl = sourceUrl
             };
             item.AddDomainEvent(new EncodingItemCreatedEvent(item));
             return item;

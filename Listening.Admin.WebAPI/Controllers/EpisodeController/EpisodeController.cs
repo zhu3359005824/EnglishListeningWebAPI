@@ -87,7 +87,7 @@ namespace Listening.Admin.WebAPI.Controllers.EpisodeController
                 //启动转码
                 _eventBus.Publish("MediaEncoding.Created", 
                 new MediaEncodingData(episodeId, "Listening", encodingEpisode.EpisodeName,
-                                              "m4a",uploadItem.FileSHA256Hash,uploadItem.FileByteSize)
+                                              "m4a",uploadItem.FileSHA256Hash,uploadItem.FileByteSize,request.AudioUrl)
                 ); 
                 return episodeId;            
             }
@@ -105,7 +105,7 @@ namespace Listening.Admin.WebAPI.Controllers.EpisodeController
             _eventBus.Publish("MediaEncoding.Created",
 
             new MediaEncodingData(Guid.NewGuid(), "Listening", "test",
-                                              "m4a","1",1)
+                                              "m4a","1",1,new Uri("123"))
             );
         }
 

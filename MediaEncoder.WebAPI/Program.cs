@@ -14,7 +14,8 @@ namespace MediaEncoder.WebAPI
                 EventBusQueueName = "MediaEncoder.WebAPI",
                 LogFilePath = "e:/temp/MediaEncoder.log"
             });
-
+            builder.Services.AddHostedService<EncoderBackgroundService>();//后台转码服务
+            builder.Services.AddHttpClient();
             // Add services to the container.
 
             builder.Services.AddControllers();

@@ -12,11 +12,11 @@ namespace MediaEncoder.Infrastructure
             _mediaEncoderDbContext = mediaEncoderDbContext;
         }
 
-        public Task<EncodingItem?> FindOneFinishAsync(string fileSHA256Hash, long fileByteSize)
+        public Task<EncodingItem?> FindOneFinishAsync(string fileSHA256Hash, long fileByteSize,ItemStatus status)
         {
-            var result = _mediaEncoderDbContext.EncodingItems.Where(x => x.FileSHA256Hash == fileSHA256Hash && x.FileByteSize == fileByteSize).ToList();
+            var result = _mediaEncoderDbContext.EncodingItems.FirstOrDefault(x => x.FileSHA256Hash == fileSHA256Hash && x.FileByteSize == fileByteSize&&x.Status== ItemStatus.Completed);
 
-            return Task.FromResult(result[0]);
+            return Task.FromResult(result);
         }
 
         public Task<EncodingItem[]> FindAsync(ItemStatus itemStatus)
