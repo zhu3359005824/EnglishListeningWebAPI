@@ -3,7 +3,7 @@ using MediatR;
 using ZHZ.EventBus;
 
 namespace MediaEncoder.WebAPI.EventHandlers;
-class EncodingItemCompletedEventHandler : INotificationHandler<EncodingItemFinishEvent>
+class EncodingItemCompletedEventHandler : INotificationHandler<EncodingItemCompletedEvent>
 {
     private readonly IEventBus eventBus;
 
@@ -12,10 +12,11 @@ class EncodingItemCompletedEventHandler : INotificationHandler<EncodingItemFinis
         this.eventBus = eventBus;
     }
 
-    public Task Handle(EncodingItemFinishEvent notification, CancellationToken cancellationToken)
+    public Task Handle(EncodingItemCompletedEvent notification, CancellationToken cancellationToken)
     {
         //把转码任务状态变化的领域事件，转换为集成事件发出
         eventBus.Publish("MediaEncoding.Completed", notification);
+        
         return Task.CompletedTask;
     }
 }

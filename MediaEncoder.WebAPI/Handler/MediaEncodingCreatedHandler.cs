@@ -9,7 +9,9 @@ using ZHZ.EventBus;
 using ZHZ.EventBus.Handler;
 
 namespace MediaEncoder.WebAPI.EventHandlers;
-
+/// <summary>
+/// 保存转码任务到T_EncodingItems表中
+/// </summary>
 [EventName("MediaEncoding.Created")]
 public class MediaEncodingCreatedHandler : DynamicIntegrationEventHandler
 {

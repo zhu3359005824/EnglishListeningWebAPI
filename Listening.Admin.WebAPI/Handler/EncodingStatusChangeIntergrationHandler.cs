@@ -5,6 +5,7 @@ using Listening.Infrastructure;
 using MediaEncoder.Domain.Events;
 using MediaEncoder.WebAPI;
 using Microsoft.AspNetCore.SignalR;
+using System.Text.Json;
 using ZHZ.EventBus;
 using ZHZ.EventBus.Handler;
 
@@ -56,8 +57,10 @@ namespace Listening.Admin.WebAPI.Handler
                     await _hubContext.Clients.All.SendAsync("OnMediaEncodingCompleted", duplicated.FileName);//通知前端刷新
                     break;
                 case "MediaEncoding.Completed":
-                    var completed = eventData as EncodingItemFinishEvent;
-                 
+                   
+
+                    var completed = JsonSerializer.Deserialize<EncodingItemCompletedEvent>(eventData.ToString())!;
+
                     //转码完成，则从Redis中把暂存的Episode信息取出来，然后正式地插入Episode表中
                     await _episodeHelper.UpdateEpisodeStatusAsync(completed.FileName, "Completed");
                     //Uri outputUrl = new Uri(eventData.OutputUrl);

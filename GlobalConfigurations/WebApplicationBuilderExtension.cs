@@ -65,31 +65,6 @@ namespace GlobalConfigurations
 
             IEnumerable<Assembly> assemblies = ReflectionHelper.GetAllReferencedAssemblies();
 
-            // 假设另一个程序的程序集文件路径
-
-
-            // string mediaEncoder = Path.Combine(projectRootPath, "MediaEncoder.WebAPI/bin/Debug/net8.0/MediaEncoder.WebAPI.dll");
-
-
-            // 加载另一个程序集
-            // Assembly anotherAssembly = Assembly.LoadFrom(mediaEncoder);
-
-            // 获取另一个程序集的入口点
-            //MethodInfo entryPoint = anotherAssembly.EntryPoint;
-            //Assembly anotherAssembly=null;
-            //Assembly? rootAssembly = Assembly.GetEntryAssembly();
-            ////string currentPath= Path.Combine(projectRootPath, "MediaEncoder.WebAPI/bin/Debug/net8.0/MediaEncoder.WebAPI.dll");
-            //if (rootAssembly.FullName== "Listening.Admin.WebAPI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null")
-            //{
-            //    // 假设另一个程序的程序集文件路径
-
-
-            //    string mediaEncoder = Path.Combine(projectRootPath, "MediaEncoder.WebAPI/bin/Debug/net8.0/MediaEncoder.WebAPI.dll");
-
-
-            //    // 加载另一个程序集
-            //  anotherAssembly = Assembly.LoadFrom(mediaEncoder);
-            //}
             
 
 

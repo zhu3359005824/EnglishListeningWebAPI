@@ -48,7 +48,6 @@ namespace MediaEncoder.Domain
                 OutType = outputType,
                 FileByteSize=fileByteSize,
                 FileSHA256Hash=fileSHA256Hash,
-                
                 Status = ItemStatus.Ready,
                 SourceSystem = sourceSystem,
                 SourceUrl = sourceUrl
@@ -75,7 +74,7 @@ namespace MediaEncoder.Domain
             this.LogText = "转码成功";
 
             //添加事件
-            AddDomainEvent(new EncodingItemFinishEvent(this.Id, SourceSystem, OutputUrl,FileName));
+            AddDomainEvent(new EncodingItemCompletedEvent(this.Id, SourceSystem, OutputUrl,FileName));
         }
 
         public void Fail(string logText)

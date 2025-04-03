@@ -105,7 +105,7 @@ namespace Listening.Admin.WebAPI.Controllers.EpisodeController
             _eventBus.Publish("MediaEncoding.Created",
 
             new MediaEncodingData(Guid.NewGuid(), "Listening", "test",
-                                              "m4a","1",1,new Uri("123"))
+                                              "m4a","1",1,new Uri("http://127.0.0.1"))
             );
         }
 
