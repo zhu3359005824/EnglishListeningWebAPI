@@ -1,7 +1,7 @@
 ﻿
 using FluentValidation;
 
-namespace Listening.Admin.WebAPI.Categories;
+namespace Listening.Admin.WebAPI.Controllers.CategoryController.Request;
 public class CategoriesSortRequest
 {
     /// <summary>

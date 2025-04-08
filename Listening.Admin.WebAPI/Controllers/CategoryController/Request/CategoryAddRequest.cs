@@ -1,7 +1,7 @@
 ﻿
 using FluentValidation;
 
-namespace Listening.Admin.WebAPI.Categories;
+namespace Listening.Admin.WebAPI.Controllers.CategoryController.Request;
 
 //启用了<Nullable>enable</Nullable>，所以string ChineseName就是非可空，会自动校验
 public record CategoryAddRequest(string Name, int ShowIndex, Uri? CoverUrl);

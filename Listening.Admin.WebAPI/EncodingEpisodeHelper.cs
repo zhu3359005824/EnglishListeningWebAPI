@@ -44,12 +44,12 @@ public class EncodingEpisodeHelper
     /// </summary>
     /// <param name="albumId"></param>
     /// <returns></returns>
-    public async Task<IEnumerable<Guid>> GetEncodingEpisodeIdsAsync(string albumName)
+    public async Task<IEnumerable<string>> GetEncodingEpisodeIdsAsync(string albumName)
     {
         string keyForEncodingEpisodeIdsOfAlbum = GetKeyForEncodingEpisodeIdsOfAlbum(albumName);
         var db = redisConn.GetDatabase();
         var values = await db.SetMembersAsync(keyForEncodingEpisodeIdsOfAlbum);
-        return values.Select(v => Guid.Parse(v));
+        return values.Select(v =>v.ToString());
     }
 
     /// <summary>

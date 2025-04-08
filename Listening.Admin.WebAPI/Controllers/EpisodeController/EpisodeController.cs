@@ -42,13 +42,14 @@ namespace Listening.Admin.WebAPI.Controllers.EpisodeController
 
         [UnitOfWork(typeof(ListeningDbContext))]
         [HttpPost]
-        public async Task<ActionResult<Guid>> AddEpisode(AddEpisodeRequest request)
+        public async Task<ActionResult<bool>> AddEpisode(AddEpisodeRequest request)
         {
             var album = await _listeningRepository.FindAlbumByNameAsync(request.albumName);
 
             if (album == null)
             {
-                return BadRequest($"Album_{request.albumName}不存在");
+
+                return false;
             }
 
             if (request.AudioUrl.ToString().EndsWith("m4a", StringComparison.OrdinalIgnoreCase))
@@ -59,7 +60,7 @@ namespace Listening.Admin.WebAPI.Controllers.EpisodeController
 
                 _dbCtx.Episodes.Add(episode);
 
-                return episode.Id;
+                return true;
             }
             else
             {
@@ -68,11 +69,7 @@ namespace Listening.Admin.WebAPI.Controllers.EpisodeController
                var uploadItem= _fileDbContext.UploadItems.FirstOrDefault<UploadItem>(e => e.SourceUrl == request.AudioUrl);
                 if (uploadItem == null) return BadRequest("文件上传失败");
 
-
-
-
                 EncodingEpisodeInfo encodingEpisode = new EncodingEpisodeInfo(
-
                      episodeId,
                      _listeningRepository.FindAlbumByNameAsync(request.albumName).Result.Id,
                       request.albumName,
@@ -89,12 +86,13 @@ namespace Listening.Admin.WebAPI.Controllers.EpisodeController
                 new MediaEncodingData(episodeId, "Listening", encodingEpisode.EpisodeName,
                                               "m4a",uploadItem.FileSHA256Hash,uploadItem.FileByteSize,request.AudioUrl)
                 ); 
-                return episodeId;            
+                return true;            
             }
 
 
 
         }
+
 
 
 
@@ -125,6 +123,7 @@ namespace Listening.Admin.WebAPI.Controllers.EpisodeController
 
 
         [HttpGet]
+        [Route("{name}")]
         public async Task<ActionResult<EpisodeModel>> FindEpisodeByName(string Name)
         {
 
@@ -149,15 +148,16 @@ namespace Listening.Admin.WebAPI.Controllers.EpisodeController
 
 
         [HttpGet]
-        public async Task<ActionResult<EpisodeModel[]>> FindEpisodesByAlbumName(string albumName)
+        [Route("{name}")]
+        public async Task<ActionResult<EpisodeModel[]>> FindEpisodesByAlbumName(string name)
         {
-            var Models = await _memoryCache.GetOrCreateAsync($"EpisodeModels_FindEpisodesByAlbumName_{albumName}", async (e) =>
+            var Models = await _memoryCache.GetOrCreateAsync($"EpisodeModels_FindEpisodesByAlbumName_{name}", async (e) =>
             {
 
                 e.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(Random.Shared.Next(5, 10));
                 e.SlidingExpiration = TimeSpan.FromMinutes(1);
 
-                return EpisodeModel.Create(await _listeningRepository.GetAllEpisodeByAlbumNameAsync(albumName), true);
+                return EpisodeModel.Create(await _listeningRepository.GetAllEpisodeByAlbumNameAsync(name), true);
 
 
             });
@@ -169,6 +169,26 @@ namespace Listening.Admin.WebAPI.Controllers.EpisodeController
 
             return Models;
 
+        }
+
+
+
+        //获取albumId下所有的转码任务
+        [HttpGet]
+        [Route("{name}")]
+        public async Task<ActionResult<EncodingEpisodeInfo[]>> FindEncodingEpisodesByAlbumId( string name)
+        {
+            List<EncodingEpisodeInfo> list = new List<EncodingEpisodeInfo>();
+            var episodeNames = await _episodeHelper.GetEncodingEpisodeIdsAsync(name);
+            foreach (string episodeName in episodeNames)
+            {
+                var encodingEpisode = await _episodeHelper.GetEncodingEpisodeAsync(episodeName);
+                if (!encodingEpisode.Status.Equals("Completed"))//不显示已经完成的
+                {
+                    list.Add(encodingEpisode);
+                }
+            }
+            return list.ToArray();
         }
     }
 }
