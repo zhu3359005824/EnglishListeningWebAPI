@@ -1,5 +1,6 @@
 using IDentity.Domain;
 using IDentity.Domain.Entity;
+using IDentity.Infrastructure;
 using IDentity.WebAPI.Event;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -143,5 +144,26 @@ namespace IDentity.WebAPI.Controllers.Login
         {
             return Ok("ok");
         }
+
+        [HttpPost]
+        [UnitOfWork(typeof(MyIdentityDbContext))]
+        public async Task<ActionResult> AddUser(AddNewAdminRequest req)
+        {
+            MyUser user = new MyUser(req.userName);
+           
+            var hasUser = await _identityRepository.FindByPhoneNumberAsync(req.phoneNum);
+            if (hasUser != null) return BadRequest($"用户已存在");
+            user.PhoneNumber = req.phoneNum;
+
+            await _identityRepository.AddUserAsync(user, req.password);
+            await _identityRepository.UserSetRole(user, "Admin");
+
+            return Ok("添加成功");
+
+
+        }
     }
+
+   
 }
+

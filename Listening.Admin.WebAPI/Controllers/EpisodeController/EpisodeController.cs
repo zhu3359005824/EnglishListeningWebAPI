@@ -94,6 +94,23 @@ namespace Listening.Admin.WebAPI.Controllers.EpisodeController
         }
 
 
+        [UnitOfWork(typeof(ListeningDbContext))]
+        [HttpPost]
+        public async Task<ActionResult<bool>> DeleteByName(DeleteEpisodeRequest del)
+        {
+            var episodes=_listeningRepository.GetAllEpisodeByAlbumNameAsync(del.albumName).Result;
+
+            var episode=episodes.Where(x=>x.EpisodeName==del.episodeName).FirstOrDefault();
+            if (episode == null) return false;
+            episode.SoftDelete();
+            return true;
+
+         
+        }
+
+
+
+        
 
 
         [AllowAnonymous]
@@ -106,20 +123,6 @@ namespace Listening.Admin.WebAPI.Controllers.EpisodeController
                                               "m4a","1",1,new Uri("http://127.0.0.1"))
             );
         }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
         [HttpGet]
@@ -170,7 +173,6 @@ namespace Listening.Admin.WebAPI.Controllers.EpisodeController
             return Models;
 
         }
-
 
 
         //获取albumId下所有的转码任务

@@ -19,15 +19,19 @@ namespace IDentity.WebAPI.Controllers.Login
             _identityRepository = identityRepository;
         }
 
-        //public async Task<ActionResult> AddUser(string username,string password)
-        //{
-        //    MyUser user= new MyUser(username);
-        //    var hasUser=  await _identityRepository.FindByNameAsync(username);
-        //    if (hasUser != null) return BadRequest($"用户名{username }已存在");
+        public async Task<ActionResult> AddUser(AddNewAdminRequest req)
+        {
+            MyUser user = new MyUser(req.userName);
+            var hasUser = await _identityRepository.FindByPhoneNumberAsync(req.phoneNum);
+            if (hasUser != null) return BadRequest($"用户已存在");
 
-        //    _identityRepository.AddUserAsync(user,password);
+           await _identityRepository.AddUserAsync(user, req.password);
+
+            return Ok("添加成功");
 
 
-        //}
+        }
     }
+
+   
 }

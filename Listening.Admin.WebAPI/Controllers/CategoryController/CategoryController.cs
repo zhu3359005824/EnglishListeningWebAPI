@@ -104,6 +104,15 @@ namespace Listening.Admin.WebAPI.Controllers.CategoryController
             return Ok();
         }
 
+        //[HttpPost]
+        //[UnitOfWork(typeof(ListeningDbContext))]
+        //public async Task<ActionResult<Guid>> Update(UpdateCategoryRequest req)
+        //{
+        //    var category = await _listeningDomainService.(req.oldCategoryName, req.ShowIndex, req.CoverUrl);
+        //    _dbCtx.Add(category);
+        //    return category.Id;
+        //}
+
 
     }
 }
