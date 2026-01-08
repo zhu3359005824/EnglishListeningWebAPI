@@ -361,3 +361,8 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+/FileService.WebAPI/UploadFiles/2026/1
+/MediaEncoder.WebAPI/2026/1
+/MediaEncoder.WebAPI/MediaEncoderFiles/2026/1
+/VUE.zip
+/test
